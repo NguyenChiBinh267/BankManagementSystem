@@ -81,8 +81,8 @@ public class Login extends JFrame implements ActionListener{
             else if(e.getSource()==signUpBtn){
 
             }
-        } catch (Exception e){
-            e.printStackTrace();
+        } catch (Exception E){
+            E.printStackTrace();
         }
     }
 
