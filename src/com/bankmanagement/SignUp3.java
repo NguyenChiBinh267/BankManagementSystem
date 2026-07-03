@@ -262,7 +262,7 @@ public class SignUp3 extends JFrame implements ActionListener {
                             "Đăng ký tài khoản thành công\n\nSố thẻ: " + DBCardNumber + "\nMã PIN: " + DBPin
                     );
 
-                    new Deposit(DBPin);
+                    new Login();
                     setVisible(false);
                 }
             } catch (Exception ex) {

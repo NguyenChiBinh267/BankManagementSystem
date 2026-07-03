@@ -225,7 +225,7 @@ public class SignUp2 extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Lưu thông tin thành công");
                     setVisible(false);
 
-                    // new SignUp3(formNo);
+                    new SignUp3(formNo);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

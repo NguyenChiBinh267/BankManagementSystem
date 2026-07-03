@@ -22,9 +22,7 @@ public class Deposit extends JFrame implements ActionListener {
 
         ImageIcon bankIcon = new ImageIcon(ClassLoader.getSystemResource("icon/bank_icon.png"));
         Image scaledBankImage = bankIcon.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT);
-        ImageIcon scaledBankIcon = new ImageIcon(scaledBankImage);
-
-        bankIconLabel = new JLabel(scaledBankIcon);
+        bankIconLabel = new JLabel(new ImageIcon(scaledBankImage));
         bankIconLabel.setBounds(25, 10, 100, 100);
         add(bankIconLabel);
 
@@ -108,7 +106,7 @@ public class Deposit extends JFrame implements ActionListener {
             try {
                 DBConnect conn = new DBConnect();
 
-                String q = "INSERT INTO Bank VALUES (?, ?, ?, ?)";
+                String q = "INSERT INTO Bank(Pin, TransactionDate, TransactionType, Amount) VALUES (?, ?, ?, ?)";
 
                 PreparedStatement ps = conn.connection.prepareStatement(q);
                 ps.setString(1, pin);
