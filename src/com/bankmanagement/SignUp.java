@@ -6,14 +6,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
 import java.util.Random;
 
 public class SignUp extends JFrame implements ActionListener {
-    JLabel bankIconLabel, applicationFormNo, signUpPageNo, signUpPageDetail, customerName, customerEmail, gender, birthday, address, city, pin;
-    JTextField customerNameField, customerEmailField, addressField, cityField, pinField;
+    JLabel bankIconLabel, applicationFormNo, signUpPageNo, signUpPageDetail, customerName, customerEmail, gender, birthday, address, city, pin, phone;
+    JTextField customerNameField, customerEmailField, addressField, cityField, pinField, phoneField;
     JRadioButton maleGenderRadioBtn, femaleGenderRadioBtn;
     JDateChooser birthdayDC;
-    JButton nextBtn;
+    JButton nextBtn, returnBtn;
     Random ran = new Random();
     long appFormNumber = (ran.nextLong()%9000L) + 1000L;
     String appFormNo = " " + Math.abs(appFormNumber);
@@ -52,6 +53,11 @@ public class SignUp extends JFrame implements ActionListener {
         customerEmail.setFont(new Font("Arial", Font.BOLD, 20));
         add(customerEmail);
 
+        phone = new JLabel("Số điện thoại :");
+        phone.setBounds(75, 550, 375, 30);
+        phone.setFont(new Font("Arial", Font.BOLD, 20));
+        add(phone);
+
         gender = new JLabel("Giới tính :");
         gender.setBounds(75, 300, 375, 30);
         gender.setFont(new Font("Arial", Font.BOLD, 20));
@@ -87,13 +93,18 @@ public class SignUp extends JFrame implements ActionListener {
         customerEmailField.setFont(new Font("Arial", Font.BOLD, 18));
         add(customerEmailField);
 
-        maleGenderRadioBtn = new JRadioButton("Male");
+        phoneField = new JTextField(15);
+        phoneField.setBounds(275, 550, 350, 30);
+        phoneField.setFont(new Font("Arial", Font.BOLD, 18));
+        add(phoneField);
+
+        maleGenderRadioBtn = new JRadioButton("Nam");
         maleGenderRadioBtn.setFont(new Font("Arial", Font.BOLD, 18));
         maleGenderRadioBtn.setBackground(new Color(222, 255, 228));
         maleGenderRadioBtn.setBounds(275, 300, 100, 30);
         add(maleGenderRadioBtn);
 
-        femaleGenderRadioBtn = new JRadioButton("Female");
+        femaleGenderRadioBtn = new JRadioButton("Nữ");
         femaleGenderRadioBtn.setFont(new Font("Arial", Font.BOLD, 18));
         femaleGenderRadioBtn.setBackground(new Color(222, 255, 228));
         femaleGenderRadioBtn.setBounds(375, 300, 100, 30);
@@ -124,13 +135,21 @@ public class SignUp extends JFrame implements ActionListener {
         pinField.setFont(new Font("Arial", Font.BOLD, 18));
         add(pinField);
 
-        nextBtn = new JButton("Next");
+        nextBtn = new JButton("Tiếp tục");
         nextBtn.setBounds(650, 700, 120, 35);
         nextBtn.setFont(new Font("Arial", Font.BOLD, 16));
         nextBtn.setBackground(Color.BLACK);
         nextBtn.setForeground(Color.WHITE);
         nextBtn.addActionListener(this);
         add(nextBtn);
+
+        returnBtn = new JButton("Quay lại");
+        returnBtn.setBounds(500, 700, 120, 35);
+        returnBtn.setFont(new Font("Arial", Font.BOLD, 16));
+        returnBtn.setBackground(Color.BLACK);
+        returnBtn.setForeground(Color.WHITE);
+        returnBtn.addActionListener(this);
+        add(returnBtn);
 
         getContentPane().setBackground(new Color(222,255, 228));
         setLayout(null);
@@ -142,7 +161,49 @@ public class SignUp extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e){
         try{
             if(e.getSource()==nextBtn){
+                String DBFormNo = appFormNo;
+                String DBCustomerName = customerNameField.getText();
+                String DBEmail = customerEmailField.getText();
+                String DBPhone = phoneField.getText();
+                String DBGender = null;
+                if(maleGenderRadioBtn.isSelected()) DBGender = "Nam";
+                else if (femaleGenderRadioBtn.isSelected()) DBGender = "Nữ";
+                String DBCustomerBirth = ((JTextField) birthdayDC.getDateEditor().getUiComponent()).getText();
+                String DBAddress = addressField.getText();
+                String DBCity = cityField.getText();
+                String DBPin = pinField.getText();
+                try{
+                    if (DBCustomerName.equals("") || DBEmail.equals("") || DBGender == null ||
+                            DBCustomerBirth.equals("") || DBAddress.equals("") ||
+                            DBCity.equals("") || DBPin.equals("") || DBPhone.equals("")) {
+                        JOptionPane.showMessageDialog(null, "Fill all the fields");
+                    }else {
+                        DBConnect conn = new DBConnect();
+                        String q = "INSERT INTO SignUp VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
+                        PreparedStatement ps = conn.connection.prepareStatement(q);
+
+                        ps.setString(1, DBFormNo);
+                        ps.setString(2, DBCustomerName);
+                        ps.setString(3, DBEmail);
+                        ps.setString(4, DBPhone);
+                        ps.setString(5, DBGender);
+                        ps.setString(6, DBCustomerBirth);
+                        ps.setString(7, DBAddress);
+                        ps.setString(8, DBCity);
+                        ps.setString(9, DBPin);
+
+                        ps.executeUpdate();
+                        new SignUp2(appFormNo);
+                        setVisible(false);
+                    }
+                } catch (Exception E){
+                    E.printStackTrace();
+                }
+            }
+            else if(e.getSource()==returnBtn) {
+                new Login();
+                setVisible(false);
             }
         } catch (Exception E){
             E.printStackTrace();

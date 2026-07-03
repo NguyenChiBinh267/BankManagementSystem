@@ -76,10 +76,10 @@ public class Login extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e){
         try{
             if(e.getSource()==signInBtn){
-
             }
             else if(e.getSource()==signUpBtn){
-
+                new SignUp();
+                setVisible(false);
             }
         } catch (Exception E){
             E.printStackTrace();
