@@ -13,7 +13,7 @@ CREATE TABLE SignUp
 
 CREATE TABLE SignUp2
 (
-    FormID varchar(30) PRIMARY KEY,
+    FormID varchar(30),
     Religion varchar(30),
     Category varchar(30),
     Income varchar(30),
@@ -33,30 +33,22 @@ CREATE TABLE SignUp3
     Services varchar(255)
 );
 
-CREATE TABLE Login
-(
-    FormID varchar(30) PRIMARY KEY,
-    CardNumber varchar(30),
-    Pin varchar(30)
-);
+CREATE TABLE Login(
+	AccountID int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	formID varchar(30),
+	cardNumber varchar(30),
+	pin varchar(50)
+)
 
 CREATE TABLE Bank
 (
-    TransactionID SERIAL PRIMARY KEY,
+    TransactionID INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     Pin varchar(30),
     TransactionDate timestamp,
     TransactionType varchar(30),
-    Amount numeric(15,2)
+    Amount BIGINT
 );
 
-SELECT * FROM SignUp;
-SELECT * FROM SignUp2;
-SELECT * FROM SignUp3;
-SELECT * FROM Login;
-SELECT * FROM Bank;
 
-SELECT *
-FROM SignUp s1
-JOIN SignUp2 s2 ON s1.FormID = s2.FormID
-JOIN SignUp3 s3 ON s1.FormID = s3.FormID
-JOIN Login l ON s1.FormID = l.FormID;
+
+
