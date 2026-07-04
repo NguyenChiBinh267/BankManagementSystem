@@ -141,6 +141,7 @@ public class SignUp extends JFrame implements ActionListener {
         nextBtn.setBackground(Color.BLACK);
         nextBtn.setForeground(Color.WHITE);
         nextBtn.addActionListener(this);
+        nextBtn.setFocusPainted(false);
         add(nextBtn);
 
         returnBtn = new JButton("Quay lại");
@@ -149,6 +150,7 @@ public class SignUp extends JFrame implements ActionListener {
         returnBtn.setBackground(Color.BLACK);
         returnBtn.setForeground(Color.WHITE);
         returnBtn.addActionListener(this);
+        returnBtn.setFocusPainted(false);
         add(returnBtn);
 
         getContentPane().setBackground(new Color(222,255, 228));

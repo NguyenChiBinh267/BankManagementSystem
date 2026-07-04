@@ -166,6 +166,7 @@ public class SignUp3 extends JFrame implements ActionListener {
         returnBtn.setBackground(Color.BLACK);
         returnBtn.setForeground(Color.WHITE);
         returnBtn.addActionListener(this);
+        returnBtn.setFocusPainted(false);
         add(returnBtn);
 
         submitBtn = new JButton("Hoàn tất");
@@ -173,6 +174,7 @@ public class SignUp3 extends JFrame implements ActionListener {
         submitBtn.setFont(new Font("Arial", Font.BOLD, 16));
         submitBtn.setBackground(Color.BLACK);
         submitBtn.setForeground(Color.WHITE);
+        submitBtn.setFocusPainted(false);
         submitBtn.addActionListener(this);
         add(submitBtn);
 
@@ -261,7 +263,6 @@ public class SignUp3 extends JFrame implements ActionListener {
                             null,
                             "Đăng ký tài khoản thành công\n\nSố thẻ: " + DBCardNumber + "\nMã PIN: " + DBPin
                     );
-
                     new Login();
                     setVisible(false);
                 }
@@ -275,6 +276,7 @@ public class SignUp3 extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
+
         new SignUp3("");
     }
 }

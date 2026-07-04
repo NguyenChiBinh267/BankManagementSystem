@@ -10,7 +10,7 @@ public class Login extends JFrame implements ActionListener{
     JLabel bankIconLabel, bankBackgroundLabel, welcomeLabel, cardNumberLabel, PINNumberLabel;
     JTextField cardNumberInputField;
     JPasswordField passwordInputField;
-    JButton signInBtn, signUpBtn;
+    JButton signInBtn, signUpBtn, exitBtn;
     Login(){
         super("Bank Management System");
         ImageIcon bankIcon = new ImageIcon(ClassLoader.getSystemResource("icon/bank_icon.png"));
@@ -51,12 +51,14 @@ public class Login extends JFrame implements ActionListener{
         signInBtn = new JButton("Đăng nhập");
         signInBtn.setBounds(345, 325, 150,30);
         signInBtn.setFont(new Font("Arial", Font.BOLD, 14));
+        signInBtn.setFocusPainted(false);
         signInBtn.addActionListener(this);
         add(signInBtn);
 
         signUpBtn = new JButton("Đăng ký");
         signUpBtn.setBounds(345, 375, 150,30);
         signUpBtn.setFont(new Font("Arial", Font.BOLD, 14));
+        signUpBtn.setFocusPainted(false);
         signUpBtn.addActionListener(this);
         add(signUpBtn);
 
@@ -80,10 +82,11 @@ public class Login extends JFrame implements ActionListener{
                 DBConnect c = new DBConnect();
                 String cardno = cardNumberInputField.getText();
                 String pin = passwordInputField.getText();
-                String q = "select * from login where card_number = '"+cardno+"' and  pin = '"+pin+"'";
+                String q = "select * from login where cardnumber = '"+cardno+"' and  pin = '"+pin+"'";
                 ResultSet resultSet = c.statement.executeQuery(q);
                 if (resultSet.next()){
                     setVisible(false);
+                    new Main(pin);
                 }else {
                     JOptionPane.showMessageDialog(null,"Incorrect Card Number or PIN");
                 }
