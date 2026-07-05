@@ -179,6 +179,8 @@ public class SignUp extends JFrame implements ActionListener {
                             DBCustomerBirth.equals("") || DBAddress.equals("") ||
                             DBCity.equals("") || DBPin.equals("") || DBPhone.equals("")) {
                         JOptionPane.showMessageDialog(null, "Fill all the fields");
+                    } else if (!DBPin.matches("[0-9]{6}")) {
+                        JOptionPane.showMessageDialog(null, "PIN must contain exactly 6 digits");
                     }else {
                         DBConnect conn = new DBConnect();
                         String q = "INSERT INTO SignUp VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -196,7 +198,7 @@ public class SignUp extends JFrame implements ActionListener {
                         ps.setString(9, DBPin);
 
                         ps.executeUpdate();
-                        new SignUp2(appFormNo);
+                        new SignUp2(appFormNo, DBPin);
                         setVisible(false);
                     }
                 } catch (Exception E){

@@ -8,12 +8,11 @@ CREATE TABLE SignUp
     Birthday varchar(30) NOT NULL,
     Address varchar(70) NOT NULL,
     City varchar(50) NOT NULL,
-    Pin varchar(30) NOT NULL
 );
 
 CREATE TABLE SignUp2
 (
-    FormID varchar(30),
+    FormID varchar(30) PRIMARY KEY,
     Religion varchar(30),
     Category varchar(30),
     Income varchar(30),
@@ -21,34 +20,38 @@ CREATE TABLE SignUp2
     Occupation varchar(50),
     CCCD varchar(20),
     SeniorCitizen varchar(10),
-    ExistingAccount varchar(10)
+    ExistingAccount varchar(10),
+
+    FOREIGN KEY (FormID) REFERENCES SignUp(FormID)
 );
 
 CREATE TABLE SignUp3
 (
     FormID varchar(30) PRIMARY KEY,
     AccountType varchar(50),
-    CardNumber varchar(30),
-    Pin varchar(30),
-    Services varchar(255)
+    CardNumber varchar(30) UNIQUE,
+    Services varchar(255),
+
+    FOREIGN KEY (FormID) REFERENCES SignUp(FormID)
 );
 
-CREATE TABLE Login(
-	AccountID int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-	formID varchar(30),
-	cardNumber varchar(30),
-	pin varchar(50)
-)
+CREATE TABLE Login
+(
+    AccountID INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    FormID varchar(30),
+    CardNumber varchar(30) UNIQUE,
+    Pin varchar(30),
+
+    FOREIGN KEY (FormID) REFERENCES SignUp(FormID)
+);
 
 CREATE TABLE Bank
 (
     TransactionID INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    Pin varchar(30),
-    TransactionDate timestamp,
+    AccountID INTEGER NOT NULL,
+    TransactionDate timestamp DEFAULT CURRENT_TIMESTAMP,
     TransactionType varchar(30),
-    Amount BIGINT
+    Amount BIGINT,
+
+    FOREIGN KEY (AccountID) REFERENCES Login(AccountID)
 );
-
-
-
-

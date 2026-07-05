@@ -20,10 +20,12 @@ public class SignUp3 extends JFrame implements ActionListener {
     JButton submitBtn, returnBtn;
 
     String formNo;
+    String pin;
 
-    public SignUp3(String formNo) {
+    public SignUp3(String formNo, String pin) {
         super("Application Form");
         this.formNo = formNo;
+        this.pin = pin;
 
         ImageIcon bankIcon = new ImageIcon(ClassLoader.getSystemResource("icon/bank_icon.png"));
         Image scaledBankImage = bankIcon.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT);
@@ -103,12 +105,12 @@ public class SignUp3 extends JFrame implements ActionListener {
         pinLabel.setFont(new Font("Arial", Font.BOLD, 20));
         add(pinLabel);
 
-        JLabel pinValueLabel = new JLabel("XXXX");
+        JLabel pinValueLabel = new JLabel(pin);
         pinValueLabel.setBounds(275, 350, 350, 30);
         pinValueLabel.setFont(new Font("Arial", Font.BOLD, 20));
         add(pinValueLabel);
 
-        pinNoteLabel = new JLabel("Mã PIN gồm 4 chữ số, được hệ thống tự động tạo.");
+        pinNoteLabel = new JLabel("Mã PIN 6 chữ số đã nhập ở trang 1.");
         pinNoteLabel.setBounds(275, 380, 500, 20);
         pinNoteLabel.setFont(new Font("Arial", Font.PLAIN, 13));
         add(pinNoteLabel);
@@ -230,27 +232,25 @@ public class SignUp3 extends JFrame implements ActionListener {
             long cardNumberValue = Math.abs(random.nextLong() % 90000000L) + 1409963000000000L;
             String DBCardNumber = String.valueOf(cardNumberValue);
 
-            int pinValue = random.nextInt(9000) + 1000;
-            String DBPin = String.valueOf(pinValue);
+            String DBPin = pin;
 
             try {
-                if (DBAccountType == null || DBServices.equals("") || !confirmCheckBox.isSelected()) {
+                if (DBAccountType == null || DBServices.equals("") || DBPin.equals("") || !confirmCheckBox.isSelected()) {
                     JOptionPane.showMessageDialog(null, "Fill all the fields");
                 } else {
                     DBConnect conn = new DBConnect();
 
-                    String q1 = "INSERT INTO SignUp3(FormID, AccountType, CardNumber, Pin, Services) VALUES (?, ?, ?, ?, ?)";
+                    String q1 = "INSERT INTO SignUp3(FormID, AccountType, CardNumber, Services) VALUES (?, ?, ?, ?)";
                     PreparedStatement ps1 = conn.connection.prepareStatement(q1);
 
                     ps1.setString(1, formNo);
                     ps1.setString(2, DBAccountType);
                     ps1.setString(3, DBCardNumber);
-                    ps1.setString(4, DBPin);
-                    ps1.setString(5, DBServices);
+                    ps1.setString(4, DBServices);
 
                     ps1.executeUpdate();
 
-                    String q2 = "INSERT INTO Login VALUES (?, ?, ?)";
+                    String q2 = "INSERT INTO Login(formID, cardNumber, pin) VALUES (?, ?, ?)";
                     PreparedStatement ps2 = conn.connection.prepareStatement(q2);
 
                     ps2.setString(1, formNo);
@@ -270,13 +270,13 @@ public class SignUp3 extends JFrame implements ActionListener {
                 ex.printStackTrace();
             }
         } else if (e.getSource() == returnBtn) {
-            new SignUp2(formNo);
+            new SignUp2(formNo, pin);
             setVisible(false);
         }
     }
 
     public static void main(String[] args) {
 
-        new SignUp3("");
+        new SignUp3("", "");
     }
 }

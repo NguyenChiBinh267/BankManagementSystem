@@ -18,10 +18,12 @@ public class SignUp2 extends JFrame implements ActionListener {
     JButton nextBtn, returnBtn;
 
     String formNo;
+    String pin;
 
-    public SignUp2(String formNo) {
+    public SignUp2(String formNo, String pin) {
         super("Application Form");
         this.formNo = formNo;
+        this.pin = pin;
 
         ImageIcon bankIcon = new ImageIcon(ClassLoader.getSystemResource("icon/bank_icon.png"));
         Image scaledBankImage = bankIcon.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT);
@@ -225,7 +227,7 @@ public class SignUp2 extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Lưu thông tin thành công");
                     setVisible(false);
 
-                    new SignUp3(formNo);
+                    new SignUp3(formNo, pin);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -237,6 +239,6 @@ public class SignUp2 extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-        new SignUp2("");
+        new SignUp2("", "");
     }
 }

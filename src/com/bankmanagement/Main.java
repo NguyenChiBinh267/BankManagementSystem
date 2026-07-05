@@ -12,10 +12,10 @@ import java.sql.ResultSet;
 public class Main extends JFrame implements ActionListener {
     JLabel bankIconLabel, chooseServiceLabel, logoutLabel;
     JButton depositBtn, withdrawBtn, fastCashBtn, miniStatementBtn, pinChangeBtn, balanceBtn, exitBtn, returnBtn;
-    String pin;
-    Main(String pin){
+    int accountId;
+    Main(int accountId){
         super("Màn hình chính");
-        this.pin = pin;
+        this.accountId = accountId;
         ImageIcon bankIcon = new ImageIcon(ClassLoader.getSystemResource("icon/bank_icon.png"));
         Image scaledBankImage = bankIcon.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT);
         ImageIcon scaledBankIcon = new ImageIcon(scaledBankImage);
@@ -116,11 +116,11 @@ public class Main extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         try{
             if(e.getSource()==depositBtn){
-                new Deposit(pin);
+                new Deposit(accountId);
                 setVisible(false);
             }
             else if(e.getSource()==withdrawBtn){
-                new WithDraw(pin);
+                new WithDraw(accountId);
                 setVisible(false);
             }
             else if(e.getSource()==fastCashBtn){
@@ -132,10 +132,10 @@ public class Main extends JFrame implements ActionListener {
                     String q = """
                             SELECT *
                             FROM bank
-                            WHERE pin = ?
+                            WHERE AccountID = ?
                     """;
                     PreparedStatement ps = c.connection.prepareStatement(q);
-                    ps.setString(1, pin);
+                    ps.setInt(1, accountId);
                     ResultSet resultSet = ps.executeQuery();
                     int balance = 0;
                     while (resultSet.next()) {
@@ -152,13 +152,15 @@ public class Main extends JFrame implements ActionListener {
                 }
             }
             else if(e.getSource()==pinChangeBtn){
-
+                new PinChange(accountId);
+                setVisible(false);
             }
             else if(e.getSource()==miniStatementBtn){
-
+                new MiniStatement(accountId);
+                setVisible(false);
             }
             else if(e.getSource()==exitBtn){
-
+                System.exit(0);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -166,6 +168,6 @@ public class Main extends JFrame implements ActionListener {
 
     }
     public static void main(String[] args) {
-        new Main("");
+        new Main(0);
     }
 }

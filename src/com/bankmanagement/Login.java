@@ -4,10 +4,30 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class Login extends JFrame implements ActionListener{
-    JLabel bankIconLabel, bankBackgroundLabel, welcomeLabel, cardNumberLabel, PINNumberLabel;
+    private ImageIcon resizeIcon(String path, int width, int height) {
+        ImageIcon icon = new ImageIcon(ClassLoader.getSystemResource(path));
+        Image img = icon.getImage();
+
+        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = resized.createGraphics();
+
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g2.drawImage(img, 0, 0, width, height, null);
+        g2.dispose();
+
+        return new ImageIcon(resized);
+    }
+    JLabel bankIconLabel, exitIconLabel, bankBackgroundLabel, welcomeLabel, cardNumberLabel, PINNumberLabel;
     JTextField cardNumberInputField;
     JPasswordField passwordInputField;
     JButton signInBtn, signUpBtn, exitBtn;
@@ -19,6 +39,13 @@ public class Login extends JFrame implements ActionListener{
         bankIconLabel = new JLabel(scaledBankIcon);
         bankIconLabel.setBounds(350, 10, 100, 100);
         add(bankIconLabel);
+
+        ImageIcon scaledExitIcon = resizeIcon("icon/exit_icon.png", 50, 50);
+
+        exitIconLabel = new JLabel(scaledExitIcon);
+        exitIconLabel.setBounds(750, 10, 50, 50);
+        exitIconLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        add(exitIconLabel);
 
         welcomeLabel = new JLabel("Chào mừng quý khách");
         welcomeLabel.setFont(new Font("Railway", Font.BOLD, 36));
@@ -79,14 +106,24 @@ public class Login extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e){
         try{
             if(e.getSource()==signInBtn){
-                DBConnect c = new DBConnect();
                 String cardno = cardNumberInputField.getText();
-                String pin = passwordInputField.getText();
-                String q = "select * from login where cardnumber = '"+cardno+"' and  pin = '"+pin+"'";
-                ResultSet resultSet = c.statement.executeQuery(q);
+                String pin = new String(passwordInputField.getPassword());
+
+                if (!pin.matches("[0-9]{6}")) {
+                    JOptionPane.showMessageDialog(null, "PIN must contain exactly 6 digits");
+                    return;
+                }
+
+                DBConnect c = new DBConnect();
+                String q = "SELECT AccountID FROM Login WHERE cardNumber = ? AND pin = ?";
+                PreparedStatement ps = c.connection.prepareStatement(q);
+                ps.setString(1, cardno);
+                ps.setString(2, pin);
+                ResultSet resultSet = ps.executeQuery();
                 if (resultSet.next()){
+                    int accountId = resultSet.getInt("AccountID");
                     setVisible(false);
-                    new Main(pin);
+                    new Main(accountId);
                 }else {
                     JOptionPane.showMessageDialog(null,"Incorrect Card Number or PIN");
                 }

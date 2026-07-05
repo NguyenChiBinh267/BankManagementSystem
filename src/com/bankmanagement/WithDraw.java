@@ -12,10 +12,10 @@ public class WithDraw extends JFrame implements ActionListener {
     JLabel bankIconLabel, titleLabel, amountLabel, noteLabel, unitLabel;
     JTextField amountField;
     JButton returnBtn, withDrawBtn;
-    String pin;
-    public WithDraw(String pin) {
+    int accountId;
+    public WithDraw(int accountId) {
         super("Rút tiền");
-        this.pin = pin;
+        this.accountId = accountId;
 
         ImageIcon bankIcon = new ImageIcon(ClassLoader.getSystemResource("icon/bank_icon.png"));
         Image scaledBankImage = bankIcon.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT);
@@ -99,10 +99,10 @@ public class WithDraw extends JFrame implements ActionListener {
                     String q = """
                             SELECT *
                             FROM bank
-                            WHERE pin = ?
+                            WHERE AccountID = ?
                     """;
                     PreparedStatement ps = c.connection.prepareStatement(q);
-                    ps.setString(1, pin);
+                    ps.setInt(1, accountId);
                     ResultSet resultSet = ps.executeQuery();
                     int balance = 0;
                     while (resultSet.next()) {
@@ -118,24 +118,24 @@ public class WithDraw extends JFrame implements ActionListener {
                         return;
                     }
                     String query = """
-                            INSERT INTO Bank(Pin, TransactionDate, TransactionType, Amount)
+                            INSERT INTO Bank(AccountID, TransactionDate, TransactionType, Amount)
                             VALUES (?, ?, ?, ?)
                     """;
                     PreparedStatement p = c.connection.prepareStatement(query);
-                    p.setString(1, pin);
+                    p.setInt(1, accountId);
                     p.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
                     p.setString(3, "Rút tiền");
                     p.setInt(4, amount);
                     p.executeUpdate();
                     JOptionPane.showMessageDialog(null, "Rút tiền thành công");
-                    new Main(pin);
+                    new Main(accountId);
                     setVisible(false);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
             else if(e.getSource() == returnBtn){
-                new Main(pin);
+                new Main(accountId);
                 setVisible(false);
             }
         } catch (Exception ex) {
@@ -143,6 +143,6 @@ public class WithDraw extends JFrame implements ActionListener {
         }
     }
     public static void main(String[] args) {
-        new WithDraw("");
+        new WithDraw(0);
     }
 }

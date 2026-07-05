@@ -14,11 +14,11 @@ public class Deposit extends JFrame implements ActionListener {
     JTextField amountField;
     JButton depositBtn, returnBtn;
 
-    String pin;
+    int accountId;
 
-    public Deposit(String pin) {
+    public Deposit(int accountId) {
         super("Nạp tiền");
-        this.pin = pin;
+        this.accountId = accountId;
 
         ImageIcon bankIcon = new ImageIcon(ClassLoader.getSystemResource("icon/bank_icon.png"));
         Image scaledBankImage = bankIcon.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT);
@@ -103,10 +103,10 @@ public class Deposit extends JFrame implements ActionListener {
             try {
                 DBConnect conn = new DBConnect();
 
-                String q = "INSERT INTO Bank(Pin, TransactionDate, TransactionType, Amount) VALUES (?, ?, ?, ?)";
+                String q = "INSERT INTO Bank(AccountID, TransactionDate, TransactionType, Amount) VALUES (?, ?, ?, ?)";
 
                 PreparedStatement ps = conn.connection.prepareStatement(q);
-                ps.setString(1, pin);
+                ps.setInt(1, accountId);
                 ps.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
                 ps.setString(3, "Nạp tiền");
                 ps.setInt(4, amount);
@@ -114,7 +114,7 @@ public class Deposit extends JFrame implements ActionListener {
                 ps.executeUpdate();
 
                 JOptionPane.showMessageDialog(null, "Nạp tiền thành công\nSố tiền: " + amount);
-                new Main(pin);
+                new Main(accountId);
                 setVisible(false);
 
             } catch (Exception ex) {
@@ -122,13 +122,13 @@ public class Deposit extends JFrame implements ActionListener {
             }
 
         } else if (e.getSource() == returnBtn) {
-            new Main(pin);
+            new Main(accountId);
             setVisible(false);
         }
     }
 
     public static void main(String[] args) {
 
-        new Deposit("");
+        new Deposit(0);
     }
 }
