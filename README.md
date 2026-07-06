@@ -116,7 +116,7 @@ database/bankmanagement.sql
 
 1. Clone the repository:
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/NguyenChiBinh267/BankManagementSystem.git
 ```
 2. Open the project in **IntelliJ IDEA**.
 
@@ -138,20 +138,6 @@ src/com/bankmanagement/DBConnect.java
 ```text
 src/com/bankmanagement/Login.java
 ```
----
-
-## Screenshots
-
-Add screenshots to an `images` folder or update these paths according to your repository structure.
-
-![Login Screen](images/login.png)
-
-![Sign Up Screen](images/signup.png)
-
-![Main Dashboard](images/main-dashboard.png)
-
-![Mini Statement](images/mini-statement.png)
-
 ---
 
 ## Future Improvements
