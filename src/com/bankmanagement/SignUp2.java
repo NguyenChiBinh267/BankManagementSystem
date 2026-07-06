@@ -25,157 +25,97 @@ public class SignUp2 extends JFrame implements ActionListener {
         this.formNo = formNo;
         this.pin = pin;
 
-        ImageIcon bankIcon = new ImageIcon(ClassLoader.getSystemResource("icon/bank_icon.png"));
-        Image scaledBankImage = bankIcon.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT);
-        ImageIcon scaledBankIcon = new ImageIcon(scaledBankImage);
+        JPanel page = UIStyle.createPage();
 
-        bankIconLabel = new JLabel(scaledBankIcon);
-        bankIconLabel.setBounds(25, 10, 100, 100);
-        add(bankIconLabel);
-
+        bankIconLabel = UIStyle.createBankIconLabel(82);
         applicationFormNo = new JLabel("APPLICATION FORM NO." + formNo);
-        applicationFormNo.setBounds(250, 30, 500, 30);
-        applicationFormNo.setFont(new Font("Arial", Font.BOLD, 32));
-        add(applicationFormNo);
-
         signUpPageNo = new JLabel("Page 2");
-        signUpPageNo.setBounds(400, 60, 500, 30);
-        signUpPageNo.setFont(new Font("Arial", Font.BOLD, 20));
-        add(signUpPageNo);
-
         signUpPageDetail = new JLabel("Thông tin bổ sung");
-        signUpPageDetail.setBounds(335, 90, 500, 30);
-        signUpPageDetail.setFont(new Font("Arial", Font.BOLD, 24));
-        add(signUpPageDetail);
+
+        JPanel header = UIStyle.createHeader(bankIconLabel, applicationFormNo, signUpPageNo);
+        UIStyle.styleSubtitle(signUpPageDetail);
+        signUpPageDetail.setAlignmentX(Component.CENTER_ALIGNMENT);
+        header.add(Box.createVerticalStrut(2));
+        header.add(signUpPageDetail);
+        page.add(header, BorderLayout.NORTH);
 
         religionLabel = new JLabel("Tôn giáo :");
-        religionLabel.setBounds(75, 200, 375, 30);
-        religionLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(religionLabel);
 
         String[] religions = {"Không", "Phật giáo", "Thiên Chúa giáo", "Hồi giáo", "Khác"};
         religionComboBox = new JComboBox<>(religions);
-        religionComboBox.setBounds(275, 200, 350, 30);
-        religionComboBox.setFont(new Font("Arial", Font.BOLD, 18));
-        add(religionComboBox);
+        UIStyle.styleComboBox(religionComboBox);
 
         categoryLabel = new JLabel("Loại khách hàng :");
-        categoryLabel.setBounds(75, 250, 375, 30);
-        categoryLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(categoryLabel);
 
         String[] categories = {"Cá nhân", "Doanh nghiệp", "Sinh viên", "Khác"};
         categoryComboBox = new JComboBox<>(categories);
-        categoryComboBox.setBounds(275, 250, 350, 30);
-        categoryComboBox.setFont(new Font("Arial", Font.BOLD, 18));
-        add(categoryComboBox);
+        UIStyle.styleComboBox(categoryComboBox);
 
         incomeLabel = new JLabel("Thu nhập :");
-        incomeLabel.setBounds(75, 300, 375, 30);
-        incomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(incomeLabel);
 
         String[] incomes = {"Không có", "Dưới 5 triệu", "5 - 10 triệu", "10 - 20 triệu", "Trên 20 triệu"};
         incomeComboBox = new JComboBox<>(incomes);
-        incomeComboBox.setBounds(275, 300, 350, 30);
-        incomeComboBox.setFont(new Font("Arial", Font.BOLD, 18));
-        add(incomeComboBox);
+        UIStyle.styleComboBox(incomeComboBox);
 
         educationLabel = new JLabel("Học vấn :");
-        educationLabel.setBounds(75, 350, 375, 30);
-        educationLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(educationLabel);
 
         String[] educations = {"THPT", "Cao đẳng", "Đại học", "Sau đại học", "Khác"};
         educationComboBox = new JComboBox<>(educations);
-        educationComboBox.setBounds(275, 350, 350, 30);
-        educationComboBox.setFont(new Font("Arial", Font.BOLD, 18));
-        add(educationComboBox);
+        UIStyle.styleComboBox(educationComboBox);
 
         occupationLabel = new JLabel("Nghề nghiệp :");
-        occupationLabel.setBounds(75, 400, 375, 30);
-        occupationLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(occupationLabel);
 
         String[] occupations = {"Sinh viên", "Nhân viên văn phòng", "Kinh doanh", "Tự do", "Khác"};
         occupationComboBox = new JComboBox<>(occupations);
-        occupationComboBox.setBounds(275, 400, 350, 30);
-        occupationComboBox.setFont(new Font("Arial", Font.BOLD, 18));
-        add(occupationComboBox);
+        UIStyle.styleComboBox(occupationComboBox);
 
         citizenIDLabel = new JLabel("Số CCCD :");
-        citizenIDLabel.setBounds(75, 450, 375, 30);
-        citizenIDLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(citizenIDLabel);
 
         citizenIDField = new JTextField(15);
-        citizenIDField.setBounds(275, 450, 350, 30);
-        citizenIDField.setFont(new Font("Arial", Font.BOLD, 18));
-        add(citizenIDField);
+        UIStyle.styleTextField(citizenIDField);
 
         seniorCitizenLabel = new JLabel("Người cao tuổi :");
-        seniorCitizenLabel.setBounds(75, 500, 375, 30);
-        seniorCitizenLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(seniorCitizenLabel);
 
         seniorYesRadioBtn = new JRadioButton("Có");
-        seniorYesRadioBtn.setBounds(275, 500, 100, 30);
-        seniorYesRadioBtn.setFont(new Font("Arial", Font.BOLD, 18));
-        seniorYesRadioBtn.setBackground(new Color(222, 255, 228));
-        add(seniorYesRadioBtn);
-
         seniorNoRadioBtn = new JRadioButton("Không");
-        seniorNoRadioBtn.setBounds(375, 500, 120, 30);
-        seniorNoRadioBtn.setFont(new Font("Arial", Font.BOLD, 18));
-        seniorNoRadioBtn.setBackground(new Color(222, 255, 228));
-        add(seniorNoRadioBtn);
 
         ButtonGroup seniorGroup = new ButtonGroup();
         seniorGroup.add(seniorYesRadioBtn);
         seniorGroup.add(seniorNoRadioBtn);
 
         existingAccountLabel = new JLabel("Đã có tài khoản :");
-        existingAccountLabel.setBounds(75, 550, 375, 30);
-        existingAccountLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(existingAccountLabel);
 
         accountYesRadioBtn = new JRadioButton("Có");
-        accountYesRadioBtn.setBounds(275, 550, 100, 30);
-        accountYesRadioBtn.setFont(new Font("Arial", Font.BOLD, 18));
-        accountYesRadioBtn.setBackground(new Color(222, 255, 228));
-        add(accountYesRadioBtn);
-
         accountNoRadioBtn = new JRadioButton("Không");
-        accountNoRadioBtn.setBounds(375, 550, 120, 30);
-        accountNoRadioBtn.setFont(new Font("Arial", Font.BOLD, 18));
-        accountNoRadioBtn.setBackground(new Color(222, 255, 228));
-        add(accountNoRadioBtn);
 
         ButtonGroup accountGroup = new ButtonGroup();
         accountGroup.add(accountYesRadioBtn);
         accountGroup.add(accountNoRadioBtn);
 
         returnBtn = new JButton("Quay lại");
-        returnBtn.setBounds(500, 700, 120, 35);
-        returnBtn.setFont(new Font("Arial", Font.BOLD, 16));
-        returnBtn.setBackground(Color.BLACK);
-        returnBtn.setForeground(Color.WHITE);
+        UIStyle.styleButton(returnBtn);
         returnBtn.addActionListener(this);
-        add(returnBtn);
 
         nextBtn = new JButton("Tiếp tục");
-        nextBtn.setBounds(650, 700, 120, 35);
-        nextBtn.setFont(new Font("Arial", Font.BOLD, 16));
-        nextBtn.setBackground(Color.BLACK);
-        nextBtn.setForeground(Color.WHITE);
+        UIStyle.styleButton(nextBtn);
         nextBtn.addActionListener(this);
-        add(nextBtn);
 
-        getContentPane().setBackground(new Color(222, 255, 228));
-        setLayout(null);
-        setSize(850, 800);
-        setLocation(360, 40);
-        setVisible(true);
+        JPanel card = UIStyle.createCard();
+        card.setPreferredSize(new Dimension(700, 510));
+        UIStyle.addFormRow(card, 0, religionLabel, religionComboBox);
+        UIStyle.addFormRow(card, 1, categoryLabel, categoryComboBox);
+        UIStyle.addFormRow(card, 2, incomeLabel, incomeComboBox);
+        UIStyle.addFormRow(card, 3, educationLabel, educationComboBox);
+        UIStyle.addFormRow(card, 4, occupationLabel, occupationComboBox);
+        UIStyle.addFormRow(card, 5, citizenIDLabel, citizenIDField);
+        UIStyle.addFormRow(card, 6, seniorCitizenLabel, UIStyle.createOptionPanel(seniorYesRadioBtn, seniorNoRadioBtn));
+        UIStyle.addFormRow(card, 7, existingAccountLabel, UIStyle.createOptionPanel(accountYesRadioBtn, accountNoRadioBtn));
+        UIStyle.addFullWidthRow(card, 8, UIStyle.createButtonPanel(returnBtn, nextBtn));
+
+        page.add(UIStyle.center(card), BorderLayout.CENTER);
+        setContentPane(page);
+        getRootPane().setDefaultButton(nextBtn);
+        UIStyle.showFrame(this, 900, 850);
     }
 
     @Override

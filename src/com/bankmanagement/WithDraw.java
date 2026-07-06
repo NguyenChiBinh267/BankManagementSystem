@@ -17,60 +17,48 @@ public class WithDraw extends JFrame implements ActionListener {
         super("Rút tiền");
         this.accountId = accountId;
 
-        ImageIcon bankIcon = new ImageIcon(ClassLoader.getSystemResource("icon/bank_icon.png"));
-        Image scaledBankImage = bankIcon.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT);
-        bankIconLabel = new JLabel(new ImageIcon(scaledBankImage));
-        bankIconLabel.setBounds(25, 10, 100, 100);
-        add(bankIconLabel);
+        JPanel page = UIStyle.createPage();
 
+        bankIconLabel = UIStyle.createBankIconLabel(88);
         titleLabel = new JLabel("RÚT TIỀN");
-        titleLabel.setBounds(350, 30, 550, 50);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
-        add(titleLabel);
+        page.add(UIStyle.createHeader(bankIconLabel, titleLabel, null), BorderLayout.NORTH);
 
         amountLabel = new JLabel("Số tiền rút :");
-        amountLabel.setBounds(75, 250, 375, 30);
-        amountLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(amountLabel);
 
         amountField = new JTextField(15);
-        amountField.setBounds(275, 250, 350, 30);
-        amountField.setFont(new Font("Arial", Font.BOLD, 20));
-        add(amountField);
+        UIStyle.styleTextField(amountField);
 
         unitLabel = new JLabel("đồng");
-        unitLabel.setBounds(650, 250, 350, 30);
-        unitLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(unitLabel);
+        UIStyle.styleFieldLabel(unitLabel);
+        unitLabel.setPreferredSize(new Dimension(60, 38));
+        unitLabel.setHorizontalAlignment(SwingConstants.LEFT);
 
         noteLabel = new JLabel("Vui lòng nhập số tiền lớn hơn 0");
-        noteLabel.setBounds(275, 285, 350, 25);
-        noteLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        add(noteLabel);
+        UIStyle.styleNoteLabel(noteLabel);
 
         returnBtn = new JButton("Quay lại");
-        returnBtn.setBounds(500, 700, 120, 35);
-        returnBtn.setFont(new Font("Arial", Font.BOLD, 16));
-        returnBtn.setBackground(Color.BLACK);
-        returnBtn.setForeground(Color.WHITE);
+        UIStyle.styleButton(returnBtn);
         returnBtn.addActionListener(this);
-        returnBtn.setFocusPainted(false);
-        add(returnBtn);
 
         withDrawBtn = new JButton("Rút tiền");
-        withDrawBtn.setBounds(650, 700, 120, 35);
-        withDrawBtn.setFont(new Font("Arial", Font.BOLD, 16));
-        withDrawBtn.setBackground(Color.BLACK);
-        withDrawBtn.setForeground(Color.WHITE);
+        UIStyle.styleButton(withDrawBtn);
         withDrawBtn.addActionListener(this);
-        withDrawBtn.setFocusPainted(false);
-        add(withDrawBtn);
 
-        getContentPane().setBackground(new Color(222, 255, 228));
-        setLayout(null);
-        setSize(850, 800);
-        setLocation(360, 40);
-        setVisible(true);
+        JPanel amountPanel = new JPanel(new BorderLayout(10, 0));
+        amountPanel.setOpaque(false);
+        amountPanel.add(amountField, BorderLayout.CENTER);
+        amountPanel.add(unitLabel, BorderLayout.EAST);
+
+        JPanel card = UIStyle.createCard();
+        card.setPreferredSize(new Dimension(650, 230));
+        UIStyle.addFormRow(card, 0, amountLabel, amountPanel);
+        UIStyle.addFullWidthRow(card, 1, noteLabel);
+        UIStyle.addFullWidthRow(card, 2, UIStyle.createButtonPanel(returnBtn, withDrawBtn));
+
+        page.add(UIStyle.center(card), BorderLayout.CENTER);
+        setContentPane(page);
+        getRootPane().setDefaultButton(withDrawBtn);
+        UIStyle.showFrame(this, 850, 800);
     }
 
     @Override

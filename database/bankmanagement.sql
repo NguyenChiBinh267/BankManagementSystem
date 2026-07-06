@@ -6,8 +6,9 @@ CREATE TABLE SignUp
     Phone varchar(20) NOT NULL,
     Gender varchar(10) NOT NULL,
     Birthday varchar(30) NOT NULL,
-    Address varchar(70) NOT NULL,
+    Address varchar(255) NOT NULL,
     City varchar(50) NOT NULL,
+    Pin varchar(30) NOT NULL
 );
 
 CREATE TABLE SignUp2
@@ -55,3 +56,5 @@ CREATE TABLE Bank
 
     FOREIGN KEY (AccountID) REFERENCES Login(AccountID)
 );
+
+

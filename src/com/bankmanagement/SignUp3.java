@@ -27,57 +27,26 @@ public class SignUp3 extends JFrame implements ActionListener {
         this.formNo = formNo;
         this.pin = pin;
 
-        ImageIcon bankIcon = new ImageIcon(ClassLoader.getSystemResource("icon/bank_icon.png"));
-        Image scaledBankImage = bankIcon.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT);
-        ImageIcon scaledBankIcon = new ImageIcon(scaledBankImage);
+        JPanel page = UIStyle.createPage();
 
-        bankIconLabel = new JLabel(scaledBankIcon);
-        bankIconLabel.setBounds(25, 10, 100, 100);
-        add(bankIconLabel);
-
+        bankIconLabel = UIStyle.createBankIconLabel(82);
         applicationFormNo = new JLabel("APPLICATION FORM NO." + formNo);
-        applicationFormNo.setBounds(250, 30, 500, 30);
-        applicationFormNo.setFont(new Font("Arial", Font.BOLD, 32));
-        add(applicationFormNo);
-
         signUpPageNo = new JLabel("Page 3");
-        signUpPageNo.setBounds(400, 60, 500, 30);
-        signUpPageNo.setFont(new Font("Arial", Font.BOLD, 20));
-        add(signUpPageNo);
-
         signUpPageDetail = new JLabel("Thông tin tài khoản");
-        signUpPageDetail.setBounds(330, 90, 500, 30);
-        signUpPageDetail.setFont(new Font("Arial", Font.BOLD, 24));
-        add(signUpPageDetail);
+
+        JPanel header = UIStyle.createHeader(bankIconLabel, applicationFormNo, signUpPageNo);
+        UIStyle.styleSubtitle(signUpPageDetail);
+        signUpPageDetail.setAlignmentX(Component.CENTER_ALIGNMENT);
+        header.add(Box.createVerticalStrut(2));
+        header.add(signUpPageDetail);
+        page.add(header, BorderLayout.NORTH);
 
         accountTypeLabel = new JLabel("Loại tài khoản :");
-        accountTypeLabel.setBounds(75, 170, 375, 30);
-        accountTypeLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(accountTypeLabel);
 
         savingAccountRadioBtn = new JRadioButton("Tài khoản tiết kiệm");
-        savingAccountRadioBtn.setBounds(275, 170, 220, 30);
-        savingAccountRadioBtn.setFont(new Font("Arial", Font.BOLD, 16));
-        savingAccountRadioBtn.setBackground(new Color(222, 255, 228));
-        add(savingAccountRadioBtn);
-
         fixedDepositRadioBtn = new JRadioButton("Tiền gửi cố định");
-        fixedDepositRadioBtn.setBounds(510, 170, 220, 30);
-        fixedDepositRadioBtn.setFont(new Font("Arial", Font.BOLD, 16));
-        fixedDepositRadioBtn.setBackground(new Color(222, 255, 228));
-        add(fixedDepositRadioBtn);
-
         currentAccountRadioBtn = new JRadioButton("Tài khoản thanh toán");
-        currentAccountRadioBtn.setBounds(275, 210, 220, 30);
-        currentAccountRadioBtn.setFont(new Font("Arial", Font.BOLD, 16));
-        currentAccountRadioBtn.setBackground(new Color(222, 255, 228));
-        add(currentAccountRadioBtn);
-
         recurringDepositRadioBtn = new JRadioButton("Tiền gửi định kỳ");
-        recurringDepositRadioBtn.setBounds(510, 210, 220, 30);
-        recurringDepositRadioBtn.setFont(new Font("Arial", Font.BOLD, 16));
-        recurringDepositRadioBtn.setBackground(new Color(222, 255, 228));
-        add(recurringDepositRadioBtn);
 
         ButtonGroup accountTypeGroup = new ButtonGroup();
         accountTypeGroup.add(savingAccountRadioBtn);
@@ -86,105 +55,96 @@ public class SignUp3 extends JFrame implements ActionListener {
         accountTypeGroup.add(recurringDepositRadioBtn);
 
         cardNumberLabel = new JLabel("Số thẻ :");
-        cardNumberLabel.setBounds(75, 280, 375, 30);
-        cardNumberLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(cardNumberLabel);
 
         JLabel cardNumberValueLabel = new JLabel("XXXX-XXXX-XXXX-XXXX");
-        cardNumberValueLabel.setBounds(275, 280, 350, 30);
-        cardNumberValueLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(cardNumberValueLabel);
+        cardNumberValueLabel.setFont(UIStyle.FIELD_FONT);
+        cardNumberValueLabel.setForeground(UIStyle.TEXT);
 
         cardNumberNoteLabel = new JLabel("Số thẻ sẽ được hệ thống tự động tạo sau khi đăng ký.");
-        cardNumberNoteLabel.setBounds(275, 310, 500, 20);
-        cardNumberNoteLabel.setFont(new Font("Arial", Font.PLAIN, 13));
-        add(cardNumberNoteLabel);
+        UIStyle.styleNoteLabel(cardNumberNoteLabel);
 
         pinLabel = new JLabel("Mã PIN :");
-        pinLabel.setBounds(75, 350, 375, 30);
-        pinLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(pinLabel);
 
         JLabel pinValueLabel = new JLabel(pin);
-        pinValueLabel.setBounds(275, 350, 350, 30);
-        pinValueLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(pinValueLabel);
+        pinValueLabel.setFont(UIStyle.FIELD_FONT);
+        pinValueLabel.setForeground(UIStyle.TEXT);
 
         pinNoteLabel = new JLabel("Mã PIN 6 chữ số đã nhập ở trang 1.");
-        pinNoteLabel.setBounds(275, 380, 500, 20);
-        pinNoteLabel.setFont(new Font("Arial", Font.PLAIN, 13));
-        add(pinNoteLabel);
+        UIStyle.styleNoteLabel(pinNoteLabel);
 
         servicesLabel = new JLabel("Dịch vụ đăng ký :");
-        servicesLabel.setBounds(75, 430, 375, 30);
-        servicesLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(servicesLabel);
 
         atmCardCheckBox = new JCheckBox("Thẻ ATM");
-        atmCardCheckBox.setBounds(275, 430, 200, 30);
-        atmCardCheckBox.setFont(new Font("Arial", Font.BOLD, 16));
-        atmCardCheckBox.setBackground(new Color(222, 255, 228));
-        add(atmCardCheckBox);
-
         internetBankingCheckBox = new JCheckBox("Internet Banking");
-        internetBankingCheckBox.setBounds(510, 430, 220, 30);
-        internetBankingCheckBox.setFont(new Font("Arial", Font.BOLD, 16));
-        internetBankingCheckBox.setBackground(new Color(222, 255, 228));
-        add(internetBankingCheckBox);
-
         mobileBankingCheckBox = new JCheckBox("Mobile Banking");
-        mobileBankingCheckBox.setBounds(275, 480, 200, 30);
-        mobileBankingCheckBox.setFont(new Font("Arial", Font.BOLD, 16));
-        mobileBankingCheckBox.setBackground(new Color(222, 255, 228));
-        add(mobileBankingCheckBox);
-
         emailAlertCheckBox = new JCheckBox("Thông báo Email");
-        emailAlertCheckBox.setBounds(510, 480, 220, 30);
-        emailAlertCheckBox.setFont(new Font("Arial", Font.BOLD, 16));
-        emailAlertCheckBox.setBackground(new Color(222, 255, 228));
-        add(emailAlertCheckBox);
-
         chequeBookCheckBox = new JCheckBox("Sổ séc");
-        chequeBookCheckBox.setBounds(275, 530, 200, 30);
-        chequeBookCheckBox.setFont(new Font("Arial", Font.BOLD, 16));
-        chequeBookCheckBox.setBackground(new Color(222, 255, 228));
-        add(chequeBookCheckBox);
-
         eStatementCheckBox = new JCheckBox("Sao kê điện tử");
-        eStatementCheckBox.setBounds(510, 530, 220, 30);
-        eStatementCheckBox.setFont(new Font("Arial", Font.BOLD, 16));
-        eStatementCheckBox.setBackground(new Color(222, 255, 228));
-        add(eStatementCheckBox);
 
         confirmCheckBox = new JCheckBox("Tôi xác nhận các thông tin đã nhập là chính xác.");
-        confirmCheckBox.setBounds(75, 620, 650, 30);
-        confirmCheckBox.setFont(new Font("Arial", Font.BOLD, 15));
-        confirmCheckBox.setBackground(new Color(222, 255, 228));
-        add(confirmCheckBox);
+        UIStyle.styleOption(confirmCheckBox);
 
         returnBtn = new JButton("Quay lại");
-        returnBtn.setBounds(500, 700, 120, 35);
-        returnBtn.setFont(new Font("Arial", Font.BOLD, 16));
-        returnBtn.setBackground(Color.BLACK);
-        returnBtn.setForeground(Color.WHITE);
+        UIStyle.styleButton(returnBtn);
         returnBtn.addActionListener(this);
-        returnBtn.setFocusPainted(false);
-        add(returnBtn);
 
         submitBtn = new JButton("Hoàn tất");
-        submitBtn.setBounds(650, 700, 120, 35);
-        submitBtn.setFont(new Font("Arial", Font.BOLD, 16));
-        submitBtn.setBackground(Color.BLACK);
-        submitBtn.setForeground(Color.WHITE);
-        submitBtn.setFocusPainted(false);
+        UIStyle.styleButton(submitBtn);
         submitBtn.addActionListener(this);
-        add(submitBtn);
 
-        getContentPane().setBackground(new Color(222, 255, 228));
-        setLayout(null);
-        setSize(850, 800);
-        setLocation(360, 40);
-        setVisible(true);
+        JPanel accountTypePanel = new JPanel(new GridLayout(2, 2, 10, 6));
+        accountTypePanel.setOpaque(false);
+        UIStyle.styleOption(savingAccountRadioBtn);
+        UIStyle.styleOption(fixedDepositRadioBtn);
+        UIStyle.styleOption(currentAccountRadioBtn);
+        UIStyle.styleOption(recurringDepositRadioBtn);
+        accountTypePanel.add(savingAccountRadioBtn);
+        accountTypePanel.add(fixedDepositRadioBtn);
+        accountTypePanel.add(currentAccountRadioBtn);
+        accountTypePanel.add(recurringDepositRadioBtn);
+
+        JPanel cardNumberPanel = new JPanel();
+        cardNumberPanel.setOpaque(false);
+        cardNumberPanel.setLayout(new BoxLayout(cardNumberPanel, BoxLayout.Y_AXIS));
+        cardNumberPanel.add(cardNumberValueLabel);
+        cardNumberPanel.add(Box.createVerticalStrut(4));
+        cardNumberPanel.add(cardNumberNoteLabel);
+
+        JPanel pinPanel = new JPanel();
+        pinPanel.setOpaque(false);
+        pinPanel.setLayout(new BoxLayout(pinPanel, BoxLayout.Y_AXIS));
+        pinPanel.add(pinValueLabel);
+        pinPanel.add(Box.createVerticalStrut(4));
+        pinPanel.add(pinNoteLabel);
+
+        JPanel servicesPanel = new JPanel(new GridLayout(3, 2, 10, 6));
+        servicesPanel.setOpaque(false);
+        UIStyle.styleOption(atmCardCheckBox);
+        UIStyle.styleOption(internetBankingCheckBox);
+        UIStyle.styleOption(mobileBankingCheckBox);
+        UIStyle.styleOption(emailAlertCheckBox);
+        UIStyle.styleOption(chequeBookCheckBox);
+        UIStyle.styleOption(eStatementCheckBox);
+        servicesPanel.add(atmCardCheckBox);
+        servicesPanel.add(internetBankingCheckBox);
+        servicesPanel.add(mobileBankingCheckBox);
+        servicesPanel.add(emailAlertCheckBox);
+        servicesPanel.add(chequeBookCheckBox);
+        servicesPanel.add(eStatementCheckBox);
+
+        JPanel card = UIStyle.createCard();
+        card.setPreferredSize(new Dimension(730, 540));
+        UIStyle.addFormRow(card, 0, accountTypeLabel, accountTypePanel);
+        UIStyle.addFormRow(card, 1, cardNumberLabel, cardNumberPanel);
+        UIStyle.addFormRow(card, 2, pinLabel, pinPanel);
+        UIStyle.addFormRow(card, 3, servicesLabel, servicesPanel);
+        UIStyle.addFullWidthRow(card, 4, confirmCheckBox);
+        UIStyle.addFullWidthRow(card, 5, UIStyle.createButtonPanel(returnBtn, submitBtn));
+
+        page.add(UIStyle.center(card), BorderLayout.CENTER);
+        setContentPane(page);
+        getRootPane().setDefaultButton(submitBtn);
+        UIStyle.showFrame(this, 900, 850);
     }
 
     @Override

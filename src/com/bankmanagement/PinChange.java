@@ -15,61 +15,40 @@ public class PinChange extends JFrame implements ActionListener {
         super("Đổi mã pin");
         this.accountId = accountId;
 
-        ImageIcon bankIcon = new ImageIcon(ClassLoader.getSystemResource("icon/bank_icon.png"));
-        Image scaledBankImage = bankIcon.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT);
-        bankIconLabel = new JLabel(new ImageIcon(scaledBankImage));
-        bankIconLabel.setBounds(25, 10, 100, 100);
-        add(bankIconLabel);
+        JPanel page = UIStyle.createPage();
 
+        bankIconLabel = UIStyle.createBankIconLabel(88);
         titleLabel = new JLabel("ĐỔI MÃ PIN");
-        titleLabel.setBounds(350, 30, 550, 50);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
-        add(titleLabel);
+        page.add(UIStyle.createHeader(bankIconLabel, titleLabel, null), BorderLayout.NORTH);
 
         pinCheckLabel = new JLabel("Nhập mã PIN hiện tại:");
-        pinCheckLabel.setBounds(75, 250, 375, 30);
-        pinCheckLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(pinCheckLabel);
 
         pinCheckTextField = new JTextField(15);
-        pinCheckTextField.setBounds(325, 250, 350, 30);
-        pinCheckTextField.setFont(new Font("Arial", Font.BOLD, 20));
-        add(pinCheckTextField);
+        UIStyle.styleTextField(pinCheckTextField);
 
         pinChangeLabel = new JLabel("Nhập mã PIN muốn đổi:");
-        pinChangeLabel.setBounds(75, 350, 375, 30);
-        pinChangeLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(pinChangeLabel);
 
         pinTextField = new JTextField(15);
-        pinTextField.setBounds(325, 350, 350, 30);
-        pinTextField.setFont(new Font("Arial", Font.BOLD, 20));
-        add(pinTextField);
+        UIStyle.styleTextField(pinTextField);
 
         returnBtn = new JButton("Quay lại");
-        returnBtn.setBounds(500, 700, 120, 35);
-        returnBtn.setFont(new Font("Arial", Font.BOLD, 16));
-        returnBtn.setBackground(Color.BLACK);
-        returnBtn.setForeground(Color.WHITE);
+        UIStyle.styleButton(returnBtn);
         returnBtn.addActionListener(this);
-        returnBtn.setFocusPainted(false);
-        add(returnBtn);
 
         conFirmBtn = new JButton("Xác nhận");
-        conFirmBtn.setBounds(650, 700, 120, 35);
-        conFirmBtn.setFont(new Font("Arial", Font.BOLD, 16));
-        conFirmBtn.setBackground(Color.BLACK);
-        conFirmBtn.setForeground(Color.WHITE);
+        UIStyle.styleButton(conFirmBtn);
         conFirmBtn.addActionListener(this);
-        conFirmBtn.setFocusPainted(false);
-        add(conFirmBtn);
 
+        JPanel card = UIStyle.createCard();
+        card.setPreferredSize(new Dimension(650, 250));
+        UIStyle.addFormRow(card, 0, pinCheckLabel, pinCheckTextField);
+        UIStyle.addFormRow(card, 1, pinChangeLabel, pinTextField);
+        UIStyle.addFullWidthRow(card, 2, UIStyle.createButtonPanel(returnBtn, conFirmBtn));
 
-        getContentPane().setBackground(new Color(222, 255, 228));
-        setLayout(null);
-        setSize(850, 800);
-        setLocation(360, 40);
-        setVisible(true);
+        page.add(UIStyle.center(card), BorderLayout.CENTER);
+        setContentPane(page);
+        getRootPane().setDefaultButton(conFirmBtn);
+        UIStyle.showFrame(this, 850, 800);
     }
     @Override
     public void actionPerformed(ActionEvent e) {

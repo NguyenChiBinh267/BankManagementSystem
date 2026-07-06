@@ -16,68 +16,33 @@ public class Main extends JFrame implements ActionListener {
     Main(int accountId){
         super("Màn hình chính");
         this.accountId = accountId;
-        ImageIcon bankIcon = new ImageIcon(ClassLoader.getSystemResource("icon/bank_icon.png"));
-        Image scaledBankImage = bankIcon.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT);
-        ImageIcon scaledBankIcon = new ImageIcon(scaledBankImage);
-        bankIconLabel = new JLabel(scaledBankIcon);
-        bankIconLabel.setBounds(350, 10, 100, 100);
-        add(bankIconLabel);
-
-        chooseServiceLabel = new JLabel("Chọn dịch vụ");
-        chooseServiceLabel.setBounds(320, 100, 450, 75);
-        chooseServiceLabel.setFont(new Font("Arial", Font.BOLD, 25));
-        add(chooseServiceLabel);
 
         depositBtn = new JButton("Nạp tiền");
-        depositBtn.setBounds(100, 200, 250, 50);
-        depositBtn.setFont(new Font("Arial", Font.BOLD, 18));
-        depositBtn.setFocusPainted(false);
+        UIStyle.styleButton(depositBtn);
         depositBtn.addActionListener(this);
-        add(depositBtn);
 
         withdrawBtn = new JButton("Rút tiền");
-        withdrawBtn.setBounds(500, 200, 250, 50);
-        withdrawBtn.setFont(new Font("Arial", Font.BOLD, 18));
-        withdrawBtn.setFocusPainted(false);
+        UIStyle.styleButton(withdrawBtn);
         withdrawBtn.addActionListener(this);
-        add(withdrawBtn);
 
         fastCashBtn = new JButton("Rút tiền nhanh");
-        fastCashBtn.setBounds(100, 300, 250, 50);
-        fastCashBtn.setFont(new Font("Arial", Font.BOLD, 18));
-        fastCashBtn.setFocusPainted(false);
+        UIStyle.styleButton(fastCashBtn);
         fastCashBtn.addActionListener(this);
-        add(fastCashBtn);
 
         miniStatementBtn = new JButton("Giao dịch gần đây");
-        miniStatementBtn.setBounds(500, 300, 250, 50);
-        miniStatementBtn.setFont(new Font("Arial", Font.BOLD, 18));
-        miniStatementBtn.setFocusPainted(false);
+        UIStyle.styleButton(miniStatementBtn);
         miniStatementBtn.addActionListener(this);
-        add(miniStatementBtn);
 
         pinChangeBtn = new JButton("Đổi mã PIN");
-        pinChangeBtn.setBounds(100, 400, 250, 50);
-        pinChangeBtn.setFont(new Font("Arial", Font.BOLD, 18));
-        pinChangeBtn.setFocusPainted(false);
+        UIStyle.styleButton(pinChangeBtn);
         pinChangeBtn.addActionListener(this);
-        add(pinChangeBtn);
 
         exitBtn = new JButton("Thoát ứng dụng");
-        exitBtn.setBounds(600, 650, 200, 50);
-        exitBtn.setFont(new Font("Arial", Font.BOLD, 18));
-        exitBtn.setBackground(Color.BLACK);
-        exitBtn.setForeground(Color.WHITE);
+        UIStyle.styleButton(exitBtn);
         exitBtn.addActionListener(this);
-        exitBtn.setFocusPainted(false);
-        add(exitBtn);
 
         logoutLabel = new JLabel("Đăng xuất");
-        logoutLabel.setBounds(700, 20, 100, 30);
-        logoutLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        logoutLabel.setForeground(Color.BLACK);
-        logoutLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        add(logoutLabel);
+        UIStyle.styleLinkLabel(logoutLabel);
 
         logoutLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -99,17 +64,50 @@ public class Main extends JFrame implements ActionListener {
         });
 
         balanceBtn = new JButton("Xem số dư");
-        balanceBtn.setBounds(500, 400, 250, 50);
-        balanceBtn.setFont(new Font("Arial", Font.BOLD, 18));
-        balanceBtn.setFocusPainted(false);
+        UIStyle.styleButton(balanceBtn);
         balanceBtn.addActionListener(this);
-        add(balanceBtn);
 
-        getContentPane().setBackground(new Color(222, 255, 228));
-        setLayout(null);
-        setSize(850, 800);
-        setLocation(360, 40);
-        setVisible(true);
+        JPanel page = UIStyle.createPage();
+
+        JPanel topBar = new JPanel(new BorderLayout());
+        topBar.setOpaque(false);
+        topBar.add(logoutLabel, BorderLayout.EAST);
+        page.add(topBar, BorderLayout.NORTH);
+
+        JPanel content = new JPanel();
+        content.setOpaque(false);
+        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
+
+        bankIconLabel = UIStyle.createBankIconLabel(88);
+        chooseServiceLabel = new JLabel("Chọn dịch vụ");
+        content.add(UIStyle.createHeader(bankIconLabel, chooseServiceLabel, null));
+        content.add(Box.createVerticalStrut(24));
+
+        JPanel card = UIStyle.createCard();
+        card.setLayout(new BorderLayout(0, 22));
+        card.setPreferredSize(new Dimension(650, 360));
+        card.setMaximumSize(new Dimension(650, 360));
+
+        JPanel buttonGrid = new JPanel(new GridLayout(3, 2, 18, 18));
+        buttonGrid.setOpaque(false);
+        buttonGrid.add(depositBtn);
+        buttonGrid.add(withdrawBtn);
+        buttonGrid.add(fastCashBtn);
+        buttonGrid.add(miniStatementBtn);
+        buttonGrid.add(pinChangeBtn);
+        buttonGrid.add(balanceBtn);
+        card.add(buttonGrid, BorderLayout.CENTER);
+
+        JPanel exitPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        exitPanel.setOpaque(false);
+        exitPanel.add(exitBtn);
+        card.add(exitPanel, BorderLayout.SOUTH);
+
+        content.add(card);
+        page.add(UIStyle.center(content), BorderLayout.CENTER);
+
+        setContentPane(page);
+        UIStyle.showFrame(this, 850, 800);
     }
 
     @Override
