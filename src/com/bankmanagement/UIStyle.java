@@ -10,9 +10,9 @@ import java.awt.image.BufferedImage;
 import java.net.URL;
 
 final class UIStyle {
-    // Put image resources in src/images:
-    // bank_icon.png (logo/window icon), exit_icon.png (Login exit button), bank_background.png (Login background).
-    // Optional illustrations: smartbank_cards.jpg, smartbank_documents.jpg, smartbank_finance.jpg.
+    // Đặt tài nguyên ảnh trong src/images:
+    // bank_icon.png (biểu tượng cửa sổ), exit_icon.png (nút thoát ở màn hình đăng nhập), bank_background.png (nền đăng nhập).
+    // Ảnh minh họa tùy chọn: smartbank_cards.jpg, smartbank_documents.jpg, smartbank_finance.jpg.
     private static final String IMAGE_RESOURCE_ROOT = "/images/";
     static final Color BACKGROUND = new Color(222, 255, 228);
     static final Color CARD_BACKGROUND = Color.WHITE;
@@ -115,14 +115,14 @@ final class UIStyle {
     static ImageIcon loadImageIcon(String fileName) {
         String normalizedFileName = normalizeImageFileName(fileName);
         if (normalizedFileName.isEmpty()) {
-            System.err.println("Missing image resource: src/images/" + fileName);
+            System.err.println("Không tìm thấy tài nguyên ảnh: src/images/" + fileName);
             return createMissingImageIcon();
         }
 
         URL resource = UIStyle.class.getResource(IMAGE_RESOURCE_ROOT + normalizedFileName);
 
         if (resource == null) {
-            System.err.println("Missing image resource: src/images/" + normalizedFileName);
+            System.err.println("Không tìm thấy tài nguyên ảnh: src/images/" + normalizedFileName);
             return createMissingImageIcon();
         }
 

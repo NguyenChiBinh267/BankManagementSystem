@@ -21,15 +21,15 @@ public class SignUp2 extends JFrame implements ActionListener {
     String pin;
 
     public SignUp2(String formNo, String pin) {
-        super("Application Form");
+        super("Biểu mẫu đăng ký");
         this.formNo = formNo;
         this.pin = pin;
 
         JPanel page = UIStyle.createPage();
 
         bankIconLabel = UIStyle.createBankIconLabel(82);
-        applicationFormNo = new JLabel("APPLICATION FORM NO." + formNo);
-        signUpPageNo = new JLabel("Page 2");
+        applicationFormNo = new JLabel("MÃ HỒ SƠ ĐĂNG KÝ" + formNo);
+        signUpPageNo = new JLabel("Trang 2");
         signUpPageDetail = new JLabel("Thông tin bổ sung");
 
         JPanel header = UIStyle.createHeader(bankIconLabel, applicationFormNo, signUpPageNo);
@@ -144,7 +144,7 @@ public class SignUp2 extends JFrame implements ActionListener {
 
             try {
                 if (DBCCCD.equals("") || DBSeniorCitizen == null || DBExistingAccount == null) {
-                    JOptionPane.showMessageDialog(null, "Fill all the fields");
+                    JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin");
                 } else {
                     DBConnect conn = new DBConnect();
 

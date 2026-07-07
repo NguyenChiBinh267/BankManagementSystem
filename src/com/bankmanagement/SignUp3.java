@@ -23,15 +23,15 @@ public class SignUp3 extends JFrame implements ActionListener {
     String pin;
 
     public SignUp3(String formNo, String pin) {
-        super("Application Form");
+        super("Biểu mẫu đăng ký");
         this.formNo = formNo;
         this.pin = pin;
 
         JPanel page = UIStyle.createPage();
 
         bankIconLabel = UIStyle.createBankIconLabel(82);
-        applicationFormNo = new JLabel("APPLICATION FORM NO." + formNo);
-        signUpPageNo = new JLabel("Page 3");
+        applicationFormNo = new JLabel("MÃ HỒ SƠ ĐĂNG KÝ" + formNo);
+        signUpPageNo = new JLabel("Trang 3");
         signUpPageDetail = new JLabel("Thông tin tài khoản");
 
         JPanel header = UIStyle.createHeader(bankIconLabel, applicationFormNo, signUpPageNo);
@@ -75,8 +75,8 @@ public class SignUp3 extends JFrame implements ActionListener {
         servicesLabel = new JLabel("Dịch vụ đăng ký :");
 
         atmCardCheckBox = new JCheckBox("Thẻ ATM");
-        internetBankingCheckBox = new JCheckBox("Internet Banking");
-        mobileBankingCheckBox = new JCheckBox("Mobile Banking");
+        internetBankingCheckBox = new JCheckBox("Ngân hàng trực tuyến");
+        mobileBankingCheckBox = new JCheckBox("Ngân hàng di động");
         emailAlertCheckBox = new JCheckBox("Thông báo Email");
         chequeBookCheckBox = new JCheckBox("Sổ séc");
         eStatementCheckBox = new JCheckBox("Sao kê điện tử");
@@ -168,10 +168,10 @@ public class SignUp3 extends JFrame implements ActionListener {
                 DBServices += "Thẻ ATM, ";
             }
             if (internetBankingCheckBox.isSelected()) {
-                DBServices += "Internet Banking, ";
+                DBServices += "Ngân hàng trực tuyến, ";
             }
             if (mobileBankingCheckBox.isSelected()) {
-                DBServices += "Mobile Banking, ";
+                DBServices += "Ngân hàng di động, ";
             }
             if (emailAlertCheckBox.isSelected()) {
                 DBServices += "Thông báo Email, ";
@@ -196,7 +196,7 @@ public class SignUp3 extends JFrame implements ActionListener {
 
             try {
                 if (DBAccountType == null || DBServices.equals("") || DBPin.equals("") || !confirmCheckBox.isSelected()) {
-                    JOptionPane.showMessageDialog(null, "Fill all the fields");
+                    JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin");
                 } else {
                     DBConnect conn = new DBConnect();
 

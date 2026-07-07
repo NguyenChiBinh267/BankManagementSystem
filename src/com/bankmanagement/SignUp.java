@@ -19,14 +19,14 @@ public class SignUp extends JFrame implements ActionListener {
     long appFormNumber = (ran.nextLong()%9000L) + 1000L;
     String appFormNo = " " + Math.abs(appFormNumber);
     SignUp(){
-        super("Application Form");
+        super("Biểu mẫu đăng ký");
 
         JPanel page = UIStyle.createPage();
 
         bankIconLabel = UIStyle.createBankIconLabel(82);
-        applicationFormNo = new JLabel("APPLICATION FORM NO." + appFormNo);
-        signUpPageNo = new JLabel("Page 1");
-        signUpPageDetail = new JLabel("Personal Detail");
+        applicationFormNo = new JLabel("MÃ HỒ SƠ ĐĂNG KÝ" + appFormNo);
+        signUpPageNo = new JLabel("Trang 1");
+        signUpPageDetail = new JLabel("Thông tin cá nhân");
 
         JPanel header = UIStyle.createHeader(bankIconLabel, applicationFormNo, signUpPageNo);
         UIStyle.styleSubtitle(signUpPageDetail);
@@ -118,9 +118,9 @@ public class SignUp extends JFrame implements ActionListener {
                     if (DBCustomerName.equals("") || DBEmail.equals("") || DBGender == null ||
                             DBCustomerBirth.equals("") || DBAddress.equals("") ||
                             DBCity.equals("") || DBPin.equals("") || DBPhone.equals("")) {
-                        JOptionPane.showMessageDialog(null, "Fill all the fields");
+                        JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin");
                     } else if (!DBPin.matches("[0-9]{6}")) {
-                        JOptionPane.showMessageDialog(null, "PIN must contain exactly 6 digits");
+                        JOptionPane.showMessageDialog(null, "PIN phải gồm đúng 6 chữ số");
                     }else {
                         DBConnect conn = new DBConnect();
                         String q = "INSERT INTO SignUp VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";

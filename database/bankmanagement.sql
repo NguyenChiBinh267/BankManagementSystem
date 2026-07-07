@@ -51,10 +51,9 @@ CREATE TABLE Bank
     TransactionID INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     AccountID INTEGER NOT NULL,
     TransactionDate timestamp DEFAULT CURRENT_TIMESTAMP,
-    TransactionType varchar(30),
+    TransactionType text,
     Amount BIGINT,
+    Note text,
 
     FOREIGN KEY (AccountID) REFERENCES Login(AccountID)
 );
-
-
