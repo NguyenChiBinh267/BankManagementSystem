@@ -148,20 +148,6 @@ CREATE TABLE Bank (
 );
 ```
 
-Nếu database cũ vẫn dùng `Bank.TransactionType varchar(30)`, chạy lệnh PostgreSQL sau:
-
-```sql
-ALTER TABLE Bank
-    ALTER COLUMN TransactionType TYPE text;
-```
-
-Nếu database cũ chưa có cột `Note`, chạy thêm:
-
-```sql
-ALTER TABLE Bank
-    ADD COLUMN IF NOT EXISTS Note text;
-```
-
 ## Chạy bằng IntelliJ IDEA
 
 1. Mở thư mục dự án bằng IntelliJ IDEA.
