@@ -32,7 +32,7 @@ public class ChangeCardNumber extends JFrame implements ActionListener {
         newCardNumberField = new JTextField(16);
         UIStyle.styleTextField(newCardNumberField);
 
-        noteLabel = new JLabel("Nhập số thẻ mới gồm 16 chữ số, không bắt đầu bằng 0 và không trùng với số thẻ đã có.");
+        noteLabel = new JLabel("Nhập số thẻ mới gồm ít nhất 9 chữ số và không trùng với số thẻ đã có.");
         UIStyle.styleNoteLabel(noteLabel);
 
         returnBtn = new JButton("Quay lại");
@@ -106,7 +106,7 @@ public class ChangeCardNumber extends JFrame implements ActionListener {
             return;
         }
         if (!BankAccountService.isValidCardNumberFormat(newCardNumber)) {
-            JOptionPane.showMessageDialog(null, "Số thẻ mới phải gồm 16 chữ số và không bắt đầu bằng 0");
+            JOptionPane.showMessageDialog(null, "Số thẻ phải gồm ít nhất 9 chữ số.");
             return;
         }
         if (newCardNumber.equals(currentCardNumber)) {

@@ -224,7 +224,7 @@ public class TransferByCardNumber extends JFrame implements ActionListener {
             return null;
         }
         if (!BankAccountService.isValidCardNumberFormat(receiverCardNumber)) {
-            JOptionPane.showMessageDialog(null, "Số thẻ người nhận phải gồm 16 chữ số và không bắt đầu bằng 0");
+            JOptionPane.showMessageDialog(null, "Số thẻ phải gồm ít nhất 9 chữ số.");
             return null;
         }
         return receiverCardNumber;

@@ -76,22 +76,22 @@ public class Main extends JFrame implements ActionListener {
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
         contentPanel.setBackground(CONTENT_BACKGROUND);
-        contentPanel.add(createOverviewPanel(), OVERVIEW);
-        contentPanel.add(createDepositPanel(), DEPOSIT);
-        contentPanel.add(createWithdrawPanel(), WITHDRAW);
-        contentPanel.add(createFastCashPanel(), FAST_CASH);
-        contentPanel.add(createTransferPanel(), TRANSFER);
-        contentPanel.add(createMiniStatementPanel(), MINI_STATEMENT);
-        contentPanel.add(createPinChangePanel(), PIN_CHANGE);
-        contentPanel.add(createChangeCardPanel(), CHANGE_CARD);
-        contentPanel.add(createBalancePanel(), BALANCE);
+        contentPanel.add(createScrollableContent(createOverviewPanel()), OVERVIEW);
+        contentPanel.add(createScrollableContent(createDepositPanel()), DEPOSIT);
+        contentPanel.add(createScrollableContent(createWithdrawPanel()), WITHDRAW);
+        contentPanel.add(createScrollableContent(createFastCashPanel()), FAST_CASH);
+        contentPanel.add(createScrollableContent(createTransferPanel()), TRANSFER);
+        contentPanel.add(createScrollableContent(createMiniStatementPanel()), MINI_STATEMENT);
+        contentPanel.add(createScrollableContent(createPinChangePanel()), PIN_CHANGE);
+        contentPanel.add(createScrollableContent(createChangeCardPanel()), CHANGE_CARD);
+        contentPanel.add(createScrollableContent(createBalancePanel()), BALANCE);
 
         page.add(sidebarPanel, BorderLayout.WEST);
         page.add(contentPanel, BorderLayout.CENTER);
 
         setContentPane(page);
         showCard(OVERVIEW);
-        UIStyle.showFrame(this, 1200, 760);
+        UIStyle.showFrame(this, 1220, 780);
     }
 
     private void initializeButtons() {
@@ -143,14 +143,11 @@ public class Main extends JFrame implements ActionListener {
     }
 
     private JPanel createSidebar() {
-        JPanel sidebar = new JPanel(new BorderLayout());
+        JPanel sidebar = new JPanel(new BorderLayout(0, 20));
         sidebar.setBackground(SIDEBAR);
-        sidebar.setPreferredSize(new Dimension(220, 0));
-        sidebar.setBorder(new EmptyBorder(24, 18, 24, 18));
-
-        JPanel top = new JPanel();
-        top.setOpaque(false);
-        top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
+        sidebar.setPreferredSize(new Dimension(260, 0));
+        sidebar.setMinimumSize(new Dimension(260, 0));
+        sidebar.setBorder(new EmptyBorder(24, 16, 24, 16));
 
         JPanel brand = new JPanel(new BorderLayout(10, 0));
         brand.setOpaque(false);
@@ -163,17 +160,26 @@ public class Main extends JFrame implements ActionListener {
         brand.add(brandName, BorderLayout.CENTER);
         brand.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
 
-        top.add(brand);
-        top.add(Box.createVerticalStrut(28));
-        addSidebarButton(top, overviewBtn);
-        addSidebarButton(top, depositBtn);
-        addSidebarButton(top, withdrawBtn);
-        addSidebarButton(top, fastCashBtn);
-        addSidebarButton(top, transferCardBtn);
-        addSidebarButton(top, miniStatementBtn);
-        addSidebarButton(top, pinChangeBtn);
-        addSidebarButton(top, changeCardBtn);
-        addSidebarButton(top, balanceBtn);
+        JPanel menu = new JPanel();
+        menu.setOpaque(false);
+        menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
+        addSidebarButton(menu, overviewBtn);
+        addSidebarButton(menu, depositBtn);
+        addSidebarButton(menu, withdrawBtn);
+        addSidebarButton(menu, fastCashBtn);
+        addSidebarButton(menu, transferCardBtn);
+        addSidebarButton(menu, miniStatementBtn);
+        addSidebarButton(menu, pinChangeBtn);
+        addSidebarButton(menu, changeCardBtn);
+        addSidebarButton(menu, balanceBtn);
+
+        JScrollPane menuScroll = new JScrollPane(menu);
+        menuScroll.setBorder(null);
+        menuScroll.setOpaque(false);
+        menuScroll.getViewport().setOpaque(false);
+        menuScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        menuScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        menuScroll.getVerticalScrollBar().setUnitIncrement(12);
 
         JPanel bottom = new JPanel();
         bottom.setOpaque(false);
@@ -181,7 +187,8 @@ public class Main extends JFrame implements ActionListener {
         addSidebarButton(bottom, logoutBtn);
         addSidebarButton(bottom, exitBtn);
 
-        sidebar.add(top, BorderLayout.NORTH);
+        sidebar.add(brand, BorderLayout.NORTH);
+        sidebar.add(menuScroll, BorderLayout.CENTER);
         sidebar.add(bottom, BorderLayout.SOUTH);
         return sidebar;
     }
@@ -346,7 +353,7 @@ public class Main extends JFrame implements ActionListener {
         newCardNumberField = createTextField();
         addFieldRow(form, 0, "Số thẻ hiện tại", currentCardNumberField);
         addFieldRow(form, 2, "Số thẻ mới", newCardNumberField);
-        addNoteRow(form, 4, "Số thẻ mới gồm 16 chữ số, không bắt đầu bằng 0 và không trùng số thẻ đã có.");
+        addNoteRow(form, 4, "Số thẻ mới phải gồm ít nhất 9 chữ số và không trùng số thẻ đã có.");
 
         JButton submitBtn = createPrimaryButton("Xác nhận đổi");
         submitBtn.setPreferredSize(new Dimension(160, 42));
@@ -510,7 +517,7 @@ public class Main extends JFrame implements ActionListener {
 
         if (!large) {
             JButton viewAllBtn = createSecondaryButton("Xem tất cả");
-            viewAllBtn.setPreferredSize(new Dimension(120, 36));
+            viewAllBtn.setPreferredSize(new Dimension(126, 38));
             viewAllBtn.addActionListener(e -> showCard(MINI_STATEMENT));
             header.add(viewAllBtn, BorderLayout.EAST);
         }
@@ -524,6 +531,7 @@ public class Main extends JFrame implements ActionListener {
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(new LineBorder(BORDER, 1, true));
         scrollPane.getViewport().setBackground(Color.WHITE);
+        scrollPane.setPreferredSize(new Dimension(0, large ? 420 : 210));
 
         card.add(header, BorderLayout.NORTH);
         card.add(scrollPane, BorderLayout.CENTER);
@@ -597,9 +605,9 @@ public class Main extends JFrame implements ActionListener {
 
     private JPanel createMetricCard(String title, JLabel valueLabel, String note, Color accent) {
         RoundedPanel card = new RoundedPanel(22, CARD_BACKGROUND, BORDER);
-        card.setLayout(new BorderLayout(0, 14));
+        card.setLayout(new BorderLayout(0, 12));
         card.setBorder(new EmptyBorder(22, 22, 20, 22));
-        card.setPreferredSize(new Dimension(0, 136));
+        card.setPreferredSize(new Dimension(0, 166));
 
         JPanel accentLine = new JPanel();
         accentLine.setBackground(accent);
@@ -629,7 +637,7 @@ public class Main extends JFrame implements ActionListener {
 
     private JLabel createMetricValueLabel(String text) {
         JLabel label = new JLabel(text);
-        label.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        label.setFont(new Font("Segoe UI", Font.BOLD, 20));
         label.setForeground(TEXT);
         return label;
     }
@@ -688,7 +696,9 @@ public class Main extends JFrame implements ActionListener {
         button.setContentAreaFilled(true);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.setBorder(new EmptyBorder(11, 14, 11, 14));
-        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 42));
+        button.setPreferredSize(new Dimension(228, 44));
+        button.setMinimumSize(new Dimension(0, 44));
+        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
         button.putClientProperty("active", Boolean.FALSE);
         button.addMouseListener(new MouseAdapter() {
             @Override
@@ -715,13 +725,23 @@ public class Main extends JFrame implements ActionListener {
         return wrapper;
     }
 
+    private JScrollPane createScrollableContent(JPanel page) {
+        JScrollPane scrollPane = new JScrollPane(page);
+        scrollPane.setBorder(null);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getViewport().setBackground(CONTENT_BACKGROUND);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        return scrollPane;
+    }
+
     private void showCard(String cardName) {
         cardLayout.show(contentPanel, cardName);
         updateActiveMenu(cardName);
         if (OVERVIEW.equals(cardName)) {
             refreshOverviewData();
         } else if (MINI_STATEMENT.equals(cardName)) {
-            refreshMiniStatement();
+            refreshMiniStatementTable();
         } else if (BALANCE.equals(cardName)) {
             refreshBalancePanel();
         } else if (CHANGE_CARD.equals(cardName)) {
@@ -740,7 +760,7 @@ public class Main extends JFrame implements ActionListener {
 
     private void refreshAllData() {
         refreshOverviewData();
-        refreshMiniStatement();
+        refreshMiniStatementTable();
         refreshBalancePanel();
         refreshChangeCardPanel();
     }
@@ -773,7 +793,7 @@ public class Main extends JFrame implements ActionListener {
         overviewTransactionModel.addRow(new Object[]{"-", message, "-", ""});
     }
 
-    private void refreshMiniStatement() {
+    private void refreshMiniStatementTable() {
         try (DBConnect c = new DBConnect()) {
             if (c.connection == null) {
                 miniStatementModel.setRowCount(0);
@@ -1166,7 +1186,7 @@ public class Main extends JFrame implements ActionListener {
             return null;
         }
         if (!BankAccountService.isValidCardNumberFormat(receiverCardNumber)) {
-            JOptionPane.showMessageDialog(null, "Số thẻ người nhận phải gồm 16 chữ số và không bắt đầu bằng 0");
+            JOptionPane.showMessageDialog(null, "Số thẻ phải gồm ít nhất 9 chữ số.");
             return null;
         }
         return receiverCardNumber;
@@ -1261,7 +1281,7 @@ public class Main extends JFrame implements ActionListener {
             return;
         }
         if (!BankAccountService.isValidCardNumberFormat(newCardNumber)) {
-            JOptionPane.showMessageDialog(null, "Số thẻ mới phải gồm 16 chữ số và không bắt đầu bằng 0");
+            JOptionPane.showMessageDialog(null, "Số thẻ phải gồm ít nhất 9 chữ số.");
             return;
         }
         if (newCardNumber.equals(currentCardNumber)) {

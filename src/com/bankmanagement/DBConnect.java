@@ -8,7 +8,7 @@ public class DBConnect implements AutoCloseable {
 
     public DBConnect(){
         try{
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/bankmanagement", "postgres", "123456");
+            connection = DriverManager.getConnection("jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres?sslmode=require", "postgres.mhhbetnwdpigljqnnthu", "***REMOVED***");
             statement = connection.createStatement();
         } catch (Exception e){
             e.printStackTrace();

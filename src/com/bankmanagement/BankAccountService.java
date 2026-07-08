@@ -52,7 +52,7 @@ final class BankAccountService {
     }
 
     static boolean isValidCardNumberFormat(String cardNumber) {
-        return cardNumber != null && cardNumber.matches("[1-9][0-9]{15}");
+        return cardNumber != null && cardNumber.matches("\\d{9,}");
     }
 
     static boolean isCardNumberUnique(Connection connection, String cardNumber) throws SQLException {
@@ -145,7 +145,7 @@ final class BankAccountService {
 
     static void changeCardNumber(Connection connection, int accountId, String newCardNumber) throws SQLException {
         if (!isValidCardNumberFormat(newCardNumber)) {
-            throw new IllegalArgumentException("Số thẻ phải gồm 16 chữ số và không bắt đầu bằng 0");
+            throw new IllegalArgumentException("Số thẻ phải gồm ít nhất 9 chữ số.");
         }
 
         boolean previousAutoCommit = connection.getAutoCommit();
@@ -177,7 +177,7 @@ final class BankAccountService {
 
     static TransferResult transferByCardNumber(Connection connection, int senderAccountId, String receiverCardNumber, long amount, String note) throws SQLException {
         if (!isValidCardNumberFormat(receiverCardNumber)) {
-            throw new IllegalArgumentException("Số thẻ người nhận phải gồm 16 chữ số và không bắt đầu bằng 0");
+            throw new IllegalArgumentException("Số thẻ phải gồm ít nhất 9 chữ số.");
         }
         if (amount <= 0) {
             throw new IllegalArgumentException("Số tiền chuyển phải lớn hơn 0");
