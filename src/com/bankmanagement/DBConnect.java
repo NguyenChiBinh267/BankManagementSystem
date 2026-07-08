@@ -5,10 +5,11 @@ import java.sql.*;
 public class DBConnect implements AutoCloseable {
     Connection connection;
     Statement statement;
+    String password = System.getenv("SUPABASE_DB_PASSWORD");
 
     public DBConnect(){
         try{
-            connection = DriverManager.getConnection("jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres?sslmode=require", "postgres.mhhbetnwdpigljqnnthu", "***REMOVED***");
+            connection = DriverManager.getConnection("jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres?sslmode=require", "postgres.mhhbetnwdpigljqnnthu", password);
             statement = connection.createStatement();
         } catch (Exception e){
             e.printStackTrace();
