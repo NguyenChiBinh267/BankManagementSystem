@@ -3,15 +3,22 @@ package com.bankmanagement;
 import java.sql.*;
 
 public class DBConnect implements AutoCloseable {
-    Connection connection;
-    Statement statement;
-    String password = System.getenv("SUPABASE_DB_PASSWORD");
+    public Connection connection;
+    public Statement statement;
 
-    public DBConnect(){
-        try{
-            connection = DriverManager.getConnection("jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres?sslmode=require", "postgres.mhhbetnwdpigljqnnthu", password);
+    public DBConnect() {
+        try {
+            Class.forName("org.postgresql.Driver");
+
+            connection = DriverManager.getConnection(
+                    "jdbc:postgresql://localhost:5432/bankmanagement",
+                    "postgres",
+                    "123456"
+            );
+
             statement = connection.createStatement();
-        } catch (Exception e){
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
