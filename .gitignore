@@ -3,6 +3,10 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 .kotlin
+*.jar
+
+!lib/jcalendar-1.4.jar
+!lib/postgresql-42.7.12.jar
 
 ### Eclipse ###
 .apt_generated

@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Bank_jar</output-path>
     <root id="archive" name="Bank.jar">
       <element id="module-output" name="Bank" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/jcalendar-1.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/jcalendar-1.4.jar" path-in-jar="/" />
       <element id="extracted-dir" path="D:/Downloads/postgresql-42.7.12.jar" path-in-jar="/" />
     </root>
   </artifact>
