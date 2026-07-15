@@ -11,16 +11,22 @@ public class DBConnect implements AutoCloseable {
             Class.forName("org.postgresql.Driver");
 
             connection = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/bankmanagement",
-                    "postgres",
-                    "123456"
+                    environmentOrDefault("SMARTBANK_DB_URL", "jdbc:postgresql://localhost:5432/bankmanagement"),
+                    environmentOrDefault("SMARTBANK_DB_USER", "postgres"),
+                    environmentOrDefault("SMARTBANK_DB_PASSWORD", "123456")
             );
 
             statement = connection.createStatement();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            connection = null;
+            statement = null;
         }
+    }
+
+    private static String environmentOrDefault(String name, String fallback) {
+        String value = System.getenv(name);
+        return value == null || value.isBlank() ? fallback : value;
     }
 
     @Override
@@ -32,8 +38,7 @@ public class DBConnect implements AutoCloseable {
             if (connection != null) {
                 connection.close();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ignored) {
         }
     }
 }

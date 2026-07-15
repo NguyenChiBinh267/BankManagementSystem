@@ -1,248 +1,217 @@
 package com.bankmanagement;
 
 import javax.swing.*;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
 
-public class Login extends JFrame implements ActionListener{
-    private static final Color PAGE_BACKGROUND = new Color(244, 247, 251);
-    private static final Color CARD_BACKGROUND = Color.WHITE;
-    private static final Color TEXT = new Color(17, 24, 39);
-    private static final Color MUTED_TEXT = new Color(107, 114, 128);
-    private static final Color BORDER = new Color(209, 213, 219);
-    private static final Color PRIMARY = new Color(37, 99, 235);
+public class Login extends JFrame implements ActionListener {
+    private final StyledTextField cardNumberInputField = new StyledTextField(20);
+    private final PasswordField pinInputField = new PasswordField(20);
+    private final PrimaryButton signInButton = new PrimaryButton("Đăng nhập");
+    private final SecondaryButton signUpButton = new SecondaryButton("Đăng ký");
+    private final NotificationPanel notificationPanel = new NotificationPanel();
 
-    JLabel bankIconLabel, exitIconLabel, bankBackgroundLabel, welcomeLabel, cardNumberLabel, PINNumberLabel;
-    JTextField cardNumberInputField;
-    JPasswordField passwordInputField;
-    JButton signInBtn, signUpBtn, exitBtn;
-    Login(){
-        super("Hệ thống quản lý ngân hàng");
+    public Login() {
+        super("SmartBank - Đăng nhập");
+        UIStyle.installGlobalDefaults();
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new Dimension(760, 560));
 
         JPanel page = new JPanel(new BorderLayout());
-        page.setBackground(PAGE_BACKGROUND);
-        page.setBorder(new EmptyBorder(22, 30, 28, 30));
+        page.setBackground(UIStyle.BACKGROUND);
+        page.setBorder(new EmptyBorder(UIStyle.SPACE_4, UIStyle.SPACE_6, UIStyle.SPACE_6, UIStyle.SPACE_6));
+        page.add(createTopBar(), BorderLayout.NORTH);
 
-        exitIconLabel = new JLabel(UIStyle.createImageIcon("exit_icon.png", 38, 38));
-        exitIconLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        exitIconLabel.setToolTipText("Thoát ứng dụng");
-        exitIconLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                System.exit(0);
-            }
-        });
-
-        JPanel topBar = new JPanel(new BorderLayout());
-        topBar.setOpaque(false);
-        topBar.add(exitIconLabel, BorderLayout.EAST);
-        page.add(topBar, BorderLayout.NORTH);
-
-        JPanel centerWrap = new JPanel(new GridBagLayout());
-        centerWrap.setOpaque(false);
-        centerWrap.add(createLoginCard());
-        page.add(centerWrap, BorderLayout.CENTER);
+        JPanel center = new JPanel(new GridBagLayout());
+        center.setOpaque(false);
+        center.add(createLoginCard());
+        page.add(center, BorderLayout.CENTER);
 
         setContentPane(page);
-        getRootPane().setDefaultButton(signInBtn);
-        UIStyle.showFrame(this, 950, 650);
+        getRootPane().setDefaultButton(signInButton);
+        signInButton.addActionListener(this);
+        signUpButton.addActionListener(this);
+        UIStyle.showFrame(this, 920, 640);
+        SwingUtilities.invokeLater(cardNumberInputField::requestFocusInWindow);
+    }
+
+    private JPanel createTopBar() {
+        JPanel topBar = new JPanel(new BorderLayout());
+        topBar.setOpaque(false);
+        JLabel productName = new JLabel("SmartBank");
+        productName.setFont(UIStyle.SUBTITLE_FONT);
+        productName.setForeground(UIStyle.TEXT);
+        topBar.add(productName, BorderLayout.WEST);
+
+        JButton closeButton = new JButton(new SmartBankIcon(SmartBankIcon.Type.POWER, 18, UIStyle.MUTED_TEXT));
+        closeButton.setPreferredSize(new Dimension(UIStyle.CONTROL_HEIGHT, UIStyle.CONTROL_HEIGHT));
+        closeButton.setToolTipText("Thoát ứng dụng");
+        closeButton.getAccessibleContext().setAccessibleName("Thoát ứng dụng");
+        closeButton.setBackground(UIStyle.CARD_BACKGROUND);
+        closeButton.setBorder(UIStyle.buttonBorder(UIStyle.BORDER));
+        closeButton.setFocusPainted(true);
+        closeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        closeButton.addActionListener(e -> dispose());
+        topBar.add(closeButton, BorderLayout.EAST);
+        return topBar;
     }
 
     private JPanel createLoginCard() {
-        RoundedPanel card = new RoundedPanel(24, CARD_BACKGROUND, BORDER);
-        card.setLayout(new BorderLayout(0, 24));
-        card.setBorder(new EmptyBorder(34, 40, 34, 40));
-        card.setPreferredSize(new Dimension(460, 480));
-
-        JPanel header = new JPanel();
-        header.setOpaque(false);
-        header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
-
-        bankIconLabel = UIStyle.createBankIconLabel(72);
-        bankIconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        header.add(bankIconLabel);
-        header.add(Box.createVerticalStrut(16));
-
-        welcomeLabel = new JLabel("Chào mừng quý khách");
-        welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        welcomeLabel.setForeground(TEXT);
-        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        header.add(welcomeLabel);
-
-        JLabel subTitle = new JLabel("Đăng nhập để tiếp tục sử dụng dịch vụ");
-        subTitle.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        subTitle.setForeground(MUTED_TEXT);
-        subTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        header.add(Box.createVerticalStrut(8));
-        header.add(subTitle);
-
-        JPanel form = new JPanel(new GridBagLayout());
-        form.setOpaque(false);
-
-        cardNumberLabel = new JLabel("Số thẻ");
-        PINNumberLabel = new JLabel("PIN");
-
-        cardNumberInputField = new JTextField(15);
-        styleModernTextField(cardNumberInputField);
-
-        passwordInputField = new JPasswordField(15);
-        styleModernTextField(passwordInputField);
-
-        addInputRow(form, 0, cardNumberLabel, cardNumberInputField);
-        addInputRow(form, 1, PINNumberLabel, passwordInputField);
-
-        signInBtn = new JButton("Đăng nhập");
-        stylePrimaryButton(signInBtn);
-        signInBtn.addActionListener(this);
-
-        signUpBtn = new JButton("Đăng ký");
-        styleSecondaryButton(signUpBtn);
-        signUpBtn.addActionListener(this);
-
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 12, 0));
-        buttonPanel.setOpaque(false);
-        buttonPanel.add(signInBtn);
-        buttonPanel.add(signUpBtn);
-
-        GridBagConstraints buttonGbc = new GridBagConstraints();
-        buttonGbc.gridx = 0;
-        buttonGbc.gridy = 2;
-        buttonGbc.fill = GridBagConstraints.HORIZONTAL;
-        buttonGbc.insets = new Insets(20, 0, 0, 0);
-        form.add(buttonPanel, buttonGbc);
-
-        card.add(header, BorderLayout.NORTH);
-        card.add(form, BorderLayout.CENTER);
+        RoundedPanel card = new RoundedPanel(UIStyle.RADIUS_CARD, UIStyle.CARD_BACKGROUND, UIStyle.BORDER);
+        card.setLayout(new BorderLayout(0, UIStyle.SPACE_6));
+        card.setBorder(new EmptyBorder(UIStyle.SPACE_8, UIStyle.SPACE_8, UIStyle.SPACE_8, UIStyle.SPACE_8));
+        card.setPreferredSize(new Dimension(460, 500));
+        card.add(createHeader(), BorderLayout.NORTH);
+        card.add(createForm(), BorderLayout.CENTER);
         return card;
     }
 
-    private void addInputRow(JPanel panel, int row, JLabel label, JComponent field) {
-        label.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        label.setForeground(TEXT);
+    private JPanel createHeader() {
+        JPanel header = new JPanel();
+        header.setOpaque(false);
+        header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
+        JLabel icon = UIStyle.createBankIconLabel(56);
+        icon.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel title = new JLabel("Đăng nhập an toàn");
+        title.setFont(UIStyle.TITLE_FONT);
+        title.setForeground(UIStyle.TEXT);
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel subtitle = new JLabel("Truy cập tài khoản SmartBank của bạn");
+        subtitle.setFont(UIStyle.BODY_FONT);
+        subtitle.setForeground(UIStyle.MUTED_TEXT);
+        subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        header.add(icon);
+        header.add(Box.createVerticalStrut(UIStyle.SPACE_4));
+        header.add(title);
+        header.add(Box.createVerticalStrut(UIStyle.SPACE_2));
+        header.add(subtitle);
+        return header;
+    }
 
-        JPanel wrapper = new JPanel(new BorderLayout(0, 8));
-        wrapper.setOpaque(false);
-        wrapper.add(label, BorderLayout.NORTH);
-        wrapper.add(field, BorderLayout.CENTER);
-
+    private JPanel createForm() {
+        JPanel form = new JPanel(new GridBagLayout());
+        form.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = row;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1;
-        gbc.insets = new Insets(row == 0 ? 0 : 14, 0, 0, 0);
-        panel.add(wrapper, gbc);
+
+        gbc.gridy = 0;
+        form.add(createFieldGroup("Số thẻ", cardNumberInputField), gbc);
+        gbc.gridy = 1;
+        gbc.insets = new Insets(UIStyle.SPACE_4, 0, 0, 0);
+        form.add(createFieldGroup("Mã PIN", pinInputField), gbc);
+        gbc.gridy = 2;
+        gbc.insets = new Insets(UIStyle.SPACE_4, 0, 0, 0);
+        form.add(notificationPanel, gbc);
+
+        JPanel actions = new JPanel(new GridLayout(1, 2, UIStyle.SPACE_3, 0));
+        actions.setOpaque(false);
+        actions.add(signInButton);
+        actions.add(signUpButton);
+        gbc.gridy = 3;
+        gbc.insets = new Insets(UIStyle.SPACE_4, 0, 0, 0);
+        form.add(actions, gbc);
+
+        JLabel securityNote = new JLabel("SmartBank không bao giờ yêu cầu bạn chia sẻ mã PIN.");
+        securityNote.setFont(UIStyle.NOTE_FONT);
+        securityNote.setForeground(UIStyle.MUTED_TEXT);
+        securityNote.setHorizontalAlignment(SwingConstants.CENTER);
+        gbc.gridy = 4;
+        gbc.insets = new Insets(UIStyle.SPACE_4, 0, 0, 0);
+        form.add(securityNote, gbc);
+        return form;
     }
 
-    private void styleModernTextField(JTextField field) {
-        field.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-        field.setForeground(TEXT);
-        field.setPreferredSize(new Dimension(360, 44));
-        field.setBackground(Color.WHITE);
-        field.setBorder(new CompoundBorder(
-                new LineBorder(BORDER, 1, true),
-                new EmptyBorder(8, 12, 8, 12)
-        ));
-    }
-
-    private void stylePrimaryButton(JButton button) {
-        button.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        button.setForeground(Color.WHITE);
-        button.setBackground(PRIMARY);
-        button.setPreferredSize(new Dimension(150, 44));
-        button.setFocusPainted(false);
-        button.setOpaque(true);
-        button.setContentAreaFilled(true);
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        button.setBorder(new EmptyBorder(10, 16, 10, 16));
-    }
-
-    private void styleSecondaryButton(JButton button) {
-        button.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        button.setForeground(PRIMARY);
-        button.setBackground(Color.WHITE);
-        button.setPreferredSize(new Dimension(150, 44));
-        button.setFocusPainted(false);
-        button.setOpaque(true);
-        button.setContentAreaFilled(true);
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        button.setBorder(new CompoundBorder(
-                new LineBorder(BORDER, 1, true),
-                new EmptyBorder(9, 16, 9, 16)
-        ));
+    private JPanel createFieldGroup(String labelText, JComponent field) {
+        JPanel group = new JPanel(new BorderLayout(0, UIStyle.SPACE_2));
+        group.setOpaque(false);
+        JLabel label = new JLabel(labelText);
+        label.setFont(UIStyle.LABEL_FONT);
+        label.setForeground(UIStyle.TEXT);
+        label.setLabelFor(field);
+        group.add(label, BorderLayout.NORTH);
+        group.add(field, BorderLayout.CENTER);
+        return group;
     }
 
     @Override
-    public void actionPerformed(ActionEvent e){
-        try{
-            if(e.getSource()==signInBtn){
-                String cardno = cardNumberInputField.getText();
-                String pin = new String(passwordInputField.getPassword());
+    public void actionPerformed(ActionEvent event) {
+        if (event.getSource() == signUpButton) {
+            new SignUp();
+            dispose();
+            return;
+        }
+        if (event.getSource() == signInButton) {
+            authenticate();
+        }
+    }
 
-                if (!pin.matches("[0-9]{6}")) {
-                    JOptionPane.showMessageDialog(null, "PIN phải gồm đúng 6 chữ số");
-                    return;
-                }
+    private void authenticate() {
+        notificationPanel.clear();
+        cardNumberInputField.clearError();
+        pinInputField.clearError();
+        String cardNumber = cardNumberInputField.getText().trim();
+        char[] pinCharacters = pinInputField.getPassword();
+        String pin = new String(pinCharacters);
+        Arrays.fill(pinCharacters, '\0');
 
-                DBConnect c = new DBConnect();
-                String q = "SELECT AccountID FROM Login WHERE cardNumber = ? AND pin = ?";
-                PreparedStatement ps = c.connection.prepareStatement(q);
-                ps.setString(1, cardno);
-                ps.setString(2, pin);
-                ResultSet resultSet = ps.executeQuery();
-                if (resultSet.next()){
-                    int accountId = resultSet.getInt("AccountID");
-                    setVisible(false);
+        boolean valid = true;
+        if (!BankAccountService.isValidCardNumberFormat(cardNumber)) {
+            cardNumberInputField.setError("Số thẻ phải gồm ít nhất 9 chữ số.");
+            valid = false;
+        }
+        if (!pin.matches("\\d{6}")) {
+            pinInputField.setError("PIN phải gồm đúng 6 chữ số.");
+            valid = false;
+        }
+        if (!valid) {
+            notificationPanel.showMessage("Kiểm tra lại các trường được đánh dấu.", NotificationPanel.Type.ERROR);
+            return;
+        }
+
+        notificationPanel.showMessage("Đang xác thực thông tin đăng nhập...", NotificationPanel.Type.INFO);
+        SwingWorkerRunner.run(
+                new JComponent[]{signInButton, signUpButton, cardNumberInputField, pinInputField},
+                () -> {
+                    try (DBConnect connection = new DBConnect()) {
+                        if (connection.connection == null) {
+                            throw new SQLException("Không thể kết nối PostgreSQL.");
+                        }
+                        return AuthenticationService.authenticate(connection.connection, cardNumber, pin);
+                    }
+                },
+                accountId -> {
+                    if (accountId < 0) {
+                        pinInputField.setText("");
+                        pinInputField.setError("Số thẻ hoặc mã PIN không chính xác.");
+                        notificationPanel.showMessage("Số thẻ hoặc mã PIN không chính xác.", NotificationPanel.Type.ERROR);
+                        pinInputField.requestFocusInWindow();
+                        return;
+                    }
+                    notificationPanel.showMessage("Đăng nhập thành công.", NotificationPanel.Type.SUCCESS);
+                    dispose();
                     new Main(accountId);
-                }else {
-                    JOptionPane.showMessageDialog(null,"Số thẻ hoặc mã PIN không đúng");
-                }
-            }
-            else if(e.getSource()==signUpBtn){
-                new SignUp();
-                setVisible(false);
-            }
-        } catch (Exception E){
-            E.printStackTrace();
-        }
+                },
+                error -> notificationPanel.showMessage(
+                        error instanceof SQLException
+                                ? "Không thể kết nối dịch vụ ngân hàng. Kiểm tra PostgreSQL và thử lại."
+                                : "Không thể đăng nhập lúc này. Vui lòng thử lại.",
+                        NotificationPanel.Type.ERROR)
+        );
     }
 
-    private static class RoundedPanel extends JPanel {
-        private final int radius;
-        private final Color fillColor;
-        private final Color borderColor;
-
-        RoundedPanel(int radius, Color fillColor, Color borderColor) {
-            this.radius = radius;
-            this.fillColor = fillColor;
-            this.borderColor = borderColor;
-            setOpaque(false);
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(fillColor);
-            g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, radius, radius);
-            if (borderColor != null) {
-                g2.setColor(borderColor);
-                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, radius, radius);
-            }
-            g2.dispose();
-            super.paintComponent(g);
-        }
+    void showSessionExpired() {
+        notificationPanel.showMessage(
+                "Phiên đăng nhập đã hết hạn do không hoạt động. Vui lòng đăng nhập lại.",
+                NotificationPanel.Type.WARNING);
     }
 
-    static void main(String[] args) {
-        new Login();
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(Login::new);
     }
 }

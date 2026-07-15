@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +49,75 @@ final class BankAccountService {
             this.receiver = receiver;
             this.amount = amount;
             this.senderBalanceAfter = senderBalanceAfter;
+        }
+    }
+
+    enum TransactionCategory {
+        ALL("Tất cả giao dịch"),
+        DEPOSIT("Nạp tiền"),
+        WITHDRAW("Rút tiền"),
+        TRANSFER_OUT("Chuyển tiền"),
+        TRANSFER_IN("Nhận tiền");
+
+        final String displayName;
+
+        TransactionCategory(String displayName) {
+            this.displayName = displayName;
+        }
+
+        @Override
+        public String toString() {
+            return displayName;
+        }
+    }
+
+    static final class TransactionRecord {
+        final int transactionId;
+        final LocalDateTime transactionDate;
+        final String transactionType;
+        final String displayType;
+        final String relatedCardNumber;
+        final long amount;
+        final String note;
+        final boolean moneyIn;
+
+        TransactionRecord(int transactionId,
+                          LocalDateTime transactionDate,
+                          String transactionType,
+                          long amount,
+                          String note) {
+            this.transactionId = transactionId;
+            this.transactionDate = transactionDate;
+            this.transactionType = transactionType;
+            this.displayType = toShortDisplayTransactionType(transactionType);
+            this.relatedCardNumber = extractRelatedCardNumber(transactionType);
+            this.amount = amount;
+            this.note = note;
+            this.moneyIn = transactionType != null && isMoneyIn(transactionType);
+        }
+    }
+
+    static final class AccountSnapshot {
+        final AccountSummary account;
+        final long balance;
+        final List<TransactionRecord> recentTransactions;
+
+        AccountSnapshot(AccountSummary account, long balance, List<TransactionRecord> recentTransactions) {
+            this.account = account;
+            this.balance = balance;
+            this.recentTransactions = recentTransactions;
+        }
+    }
+
+    static final class TransferPreview {
+        final AccountSummary sender;
+        final AccountSummary receiver;
+        final long senderBalance;
+
+        TransferPreview(AccountSummary sender, AccountSummary receiver, long senderBalance) {
+            this.sender = sender;
+            this.receiver = receiver;
+            this.senderBalance = senderBalance;
         }
     }
 
@@ -141,6 +211,130 @@ final class BankAccountService {
             }
         }
         return balance;
+    }
+
+    static AccountSnapshot loadAccountSnapshot(Connection connection, int accountId, int recentLimit) throws SQLException {
+        AccountSummary account = findAccountById(connection, accountId);
+        if (account == null) {
+            throw new IllegalStateException("Không tìm thấy tài khoản đang đăng nhập");
+        }
+        long balance = calculateBalance(connection, accountId);
+        List<TransactionRecord> transactions = loadTransactions(
+                connection, accountId, null, null, TransactionCategory.ALL, recentLimit);
+        return new AccountSnapshot(account, balance, transactions);
+    }
+
+    static List<TransactionRecord> loadTransactions(Connection connection,
+                                                      int accountId,
+                                                      LocalDateTime from,
+                                                      LocalDateTime to,
+                                                      TransactionCategory category,
+                                                      int limit) throws SQLException {
+        StringBuilder query = new StringBuilder("""
+                SELECT TransactionID, TransactionDate, TransactionType, Amount, Note
+                FROM Bank
+                WHERE AccountID = ?
+        """);
+        List<Object> parameters = new ArrayList<>();
+        parameters.add(accountId);
+
+        if (from != null) {
+            query.append(" AND TransactionDate >= ?");
+            parameters.add(Timestamp.valueOf(from));
+        }
+        if (to != null) {
+            query.append(" AND TransactionDate <= ?");
+            parameters.add(Timestamp.valueOf(to));
+        }
+
+        TransactionCategory safeCategory = category == null ? TransactionCategory.ALL : category;
+        switch (safeCategory) {
+            case DEPOSIT -> {
+                query.append(" AND TransactionType = ?");
+                parameters.add(DEPOSIT_TYPE);
+            }
+            case WITHDRAW -> {
+                query.append(" AND TransactionType = ?");
+                parameters.add(WITHDRAW_TYPE);
+            }
+            case TRANSFER_OUT -> {
+                query.append(" AND (TransactionType LIKE ? OR TransactionType LIKE ?)");
+                parameters.add(TRANSFER_OUT_PREFIX + "%");
+                parameters.add(OLD_TRANSFER_OUT_PREFIX + "%");
+            }
+            case TRANSFER_IN -> {
+                query.append(" AND (TransactionType LIKE ? OR TransactionType LIKE ?)");
+                parameters.add(TRANSFER_IN_PREFIX + "%");
+                parameters.add(OLD_TRANSFER_IN_PREFIX + "%");
+            }
+            default -> {
+            }
+        }
+
+        query.append(" ORDER BY TransactionDate DESC, TransactionID DESC LIMIT ?");
+        parameters.add(Math.max(1, Math.min(limit, 500)));
+
+        List<TransactionRecord> transactions = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(query.toString())) {
+            for (int index = 0; index < parameters.size(); index++) {
+                statement.setObject(index + 1, parameters.get(index));
+            }
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Timestamp timestamp = resultSet.getTimestamp("TransactionDate");
+                    transactions.add(new TransactionRecord(
+                            resultSet.getInt("TransactionID"),
+                            timestamp == null ? null : timestamp.toLocalDateTime(),
+                            resultSet.getString("TransactionType"),
+                            resultSet.getLong("Amount"),
+                            resultSet.getString("Note")
+                    ));
+                }
+            }
+        }
+        return transactions;
+    }
+
+    static long deposit(Connection connection, int accountId, long amount, String note) throws SQLException {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Số tiền nạp phải lớn hơn 0");
+        }
+        if (findAccountById(connection, accountId) == null) {
+            throw new IllegalStateException("Không tìm thấy tài khoản đang đăng nhập");
+        }
+        insertTransaction(connection, accountId, new Timestamp(System.currentTimeMillis()), DEPOSIT_TYPE, amount, note);
+        return calculateBalance(connection, accountId);
+    }
+
+    static boolean changePin(Connection connection, int accountId, String oldPin, String newPin) throws SQLException {
+        if (oldPin == null || !oldPin.matches("\\d{6}") || newPin == null || !newPin.matches("\\d{6}")) {
+            throw new IllegalArgumentException("PIN phải gồm đúng 6 chữ số");
+        }
+        String query = "UPDATE Login SET Pin = ? WHERE AccountID = ? AND Pin = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, newPin);
+            statement.setInt(2, accountId);
+            statement.setString(3, oldPin);
+            return statement.executeUpdate() == 1;
+        }
+    }
+
+    static TransferPreview previewTransfer(Connection connection, int senderAccountId, String receiverCardNumber) throws SQLException {
+        if (!isValidCardNumberFormat(receiverCardNumber)) {
+            throw new IllegalArgumentException("Số thẻ phải gồm ít nhất 9 chữ số.");
+        }
+        AccountSummary sender = findAccountById(connection, senderAccountId);
+        if (sender == null) {
+            throw new IllegalStateException("Không tìm thấy tài khoản đang đăng nhập");
+        }
+        AccountSummary receiver = findAccountByCardNumber(connection, receiverCardNumber);
+        if (receiver == null) {
+            throw new IllegalStateException("Số thẻ người nhận không tồn tại");
+        }
+        if (sender.accountId == receiver.accountId) {
+            throw new IllegalStateException("Không thể chuyển tiền cho chính số thẻ của bạn");
+        }
+        return new TransferPreview(sender, receiver, calculateBalance(connection, senderAccountId));
     }
 
     static void changeCardNumber(Connection connection, int accountId, String newCardNumber) throws SQLException {

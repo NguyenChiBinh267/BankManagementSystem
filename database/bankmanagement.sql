@@ -53,7 +53,7 @@ CREATE TABLE Bank
     TransactionDate timestamp DEFAULT CURRENT_TIMESTAMP,
     TransactionType text,
     Amount BIGINT,
-	Note varchar(255);
+	Note varchar(255),
 
     FOREIGN KEY (AccountID) REFERENCES Login(AccountID)
 );
