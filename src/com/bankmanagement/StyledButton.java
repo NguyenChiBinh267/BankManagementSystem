@@ -25,11 +25,12 @@ abstract class StyledButton extends JButton {
         setBackground(normalBackground);
         setPreferredSize(new Dimension(140, UIStyle.CONTROL_HEIGHT));
         setMinimumSize(new Dimension(96, UIStyle.CONTROL_HEIGHT));
-        setFocusPainted(true);
+        setFocusPainted(false);
+        setBorderPainted(false);
         setOpaque(true);
         setContentAreaFilled(true);
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        setBorder(UIStyle.buttonBorder(borderColor));
+        setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         setIconTextGap(UIStyle.SPACE_2);
 
         addMouseListener(new MouseAdapter() {
@@ -41,19 +42,6 @@ abstract class StyledButton extends JButton {
             @Override
             public void mouseExited(MouseEvent e) {
                 if (isEnabled()) setBackground(normalBackground);
-            }
-        });
-        addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                setBorder(new javax.swing.border.CompoundBorder(
-                        new javax.swing.border.LineBorder(UIStyle.PRIMARY, 2, true),
-                        new javax.swing.border.EmptyBorder(8, 15, 8, 15)));
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                setBorder(UIStyle.buttonBorder(borderColor));
             }
         });
     }

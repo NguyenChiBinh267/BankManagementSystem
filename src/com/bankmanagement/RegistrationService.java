@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Supplier;
 
 final class RegistrationService {
     record PersonalData(String formId, String name, String email, String phone, String gender,
@@ -24,12 +25,20 @@ final class RegistrationService {
                            PersonalData personal,
                            AdditionalData additional,
                            AccountData account) throws SQLException {
+        return register(connection, personal, additional, account, RegistrationService::generateCardNumber);
+    }
+
+    static String register(Connection connection,
+                           PersonalData personal,
+                           AdditionalData additional,
+                           AccountData account,
+                           Supplier<String> cardNumberSupplier) throws SQLException {
         boolean previousAutoCommit = connection.getAutoCommit();
         try {
             connection.setAutoCommit(false);
             insertPersonal(connection, personal);
             insertAdditional(connection, personal.formId(), additional);
-            String cardNumber = generateUniqueCardNumber(connection);
+            String cardNumber = generateUniqueCardNumber(connection, cardNumberSupplier);
             insertAccount(connection, personal.formId(), cardNumber, account);
             insertLogin(connection, personal.formId(), cardNumber, personal.pin());
             connection.commit();
@@ -108,10 +117,15 @@ final class RegistrationService {
         }
     }
 
-    private static String generateUniqueCardNumber(Connection connection) throws SQLException {
+    private static String generateCardNumber() {
+        long suffix = ThreadLocalRandom.current().nextLong(10_000_000L, 100_000_000L);
+        return "14099630" + suffix;
+    }
+
+    private static String generateUniqueCardNumber(Connection connection,
+                                                   Supplier<String> cardNumberSupplier) throws SQLException {
         for (int attempt = 0; attempt < 20; attempt++) {
-            long suffix = ThreadLocalRandom.current().nextLong(10_000_000L, 100_000_000L);
-            String cardNumber = "14099630" + suffix;
+            String cardNumber = cardNumberSupplier.get();
             if (BankAccountService.isCardNumberUnique(connection, cardNumber)) {
                 return cardNumber;
             }
