@@ -35,3 +35,7 @@ bin/
 replacements.txt
 .env
 config.properties
+
+# Local AI/Codex skill bundles (not part of the SmartBank application)
+.agents/skills/
+.codex/skills/
